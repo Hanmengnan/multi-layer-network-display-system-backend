@@ -75,7 +75,7 @@
 
 #### 接口URL
 
-> /home
+> /
 
 #### 请求方式
 
@@ -433,6 +433,96 @@
 | -------- | ------ | -------- | -------- |
 | response | 1      | Text     | 请求失败 |
 
+## /lightNodesAndLinks
+
+```text
+光网络节点与链路
+```
+
+#### 接口状态
+
+> 需修改
+
+#### 接口URL
+
+> /light/nodesAndLinks
+
+#### 请求方式
+
+> GET
+
+#### Content-Type
+
+> form-data
+
+#### 预执行脚本
+
+```javascript
+暂无预执行脚本
+```
+
+#### 后执行脚本
+
+```javascript
+暂无后执行脚本
+```
+
+#### 成功响应示例
+
+```javascript
+{
+    "response": 0,
+    "nodes": [
+        {
+            "id": "Bj001",
+            "name": "北京站",
+        },
+        {
+            "id": "Bj001",
+            "name": "北京站",
+        }
+    ],
+    "links": [
+        {
+            "id": "",
+            "name": "",
+            "node1ID": "",
+            "node1Name": "",
+            "node2ID": "",
+            "node2Name": "",
+            "contain": ""
+        }
+    ]
+}
+```
+
+| 参数名          | 示例值 | 参数类型 | 参数描述 |
+| --------------- | ------ | -------- | -------- |
+| response        | 0      | Text     | 请求成功 |
+| nodes           |        | Text     |          |
+| nodes.id        | Bj001  | Text     |          |
+| nodes.name      | 北京站 | Text     |          |
+| links           |        | Text     |          |
+| links.id        |        | Text     |          |
+| links.name      |        | Text     |          |
+| links.node1ID   |        | Text     |          |
+| links.node1Name |        | Text     |          |
+| links.node2ID   |        | Text     |          |
+| links.node2Name |        | Text     |          |
+| links.contain   |        | Text     |          |
+
+#### 成功响应示例
+
+```javascript
+{
+	"response": 1
+}
+```
+
+| 参数名   | 示例值 | 参数类型 | 参数描述 |
+| -------- | ------ | -------- | -------- |
+| response | 1      | Text     | 请求失败 |
+
 ## /bandSet
 
 ```text
@@ -605,96 +695,6 @@
 | -------- | ------ | -------- | -------- |
 | response | 1      | Text     | 请求失败 |
 
-## /light-node-link
-
-```text
-光网络节点与链路
-```
-
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> /light-node-link
-
-#### 请求方式
-
-> GET
-
-#### Content-Type
-
-> form-data
-
-#### 预执行脚本
-
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-#### 成功响应示例
-
-```javascript
-{
-    "response": 0,
-    "nodes": [
-        {
-            "id": "Bj001",
-            "name": "北京站",
-        },
-        {
-            "id": "Bj001",
-            "name": "北京站",
-        }
-    ],
-    "links": [
-        {
-            "id": "",
-            "name": "",
-            "node1ID": "",
-            "node1Name": "",
-            "node2ID": "",
-            "node2Name": "",
-            "contain": ""
-        }
-    ]
-}
-```
-
-| 参数名          | 示例值 | 参数类型 | 参数描述 |
-| --------------- | ------ | -------- | -------- |
-| response        | 0      | Text     | 请求成功 |
-| nodes           |        | Text     |          |
-| nodes.id        | Bj001  | Text     |          |
-| nodes.name      | 北京站 | Text     |          |
-| links           |        | Text     |          |
-| links.id        |        | Text     |          |
-| links.name      |        | Text     |          |
-| links.node1ID   |        | Text     |          |
-| links.node1Name |        | Text     |          |
-| links.node2ID   |        | Text     |          |
-| links.node2Name |        | Text     |          |
-| links.contain   |        | Text     |          |
-
-#### 成功响应示例
-
-```javascript
-{
-	"response": 1
-}
-```
-
-| 参数名   | 示例值 | 参数类型 | 参数描述 |
-| -------- | ------ | -------- | -------- |
-| response | 1      | Text     | 请求失败 |
-
 ## /data
 
 ```text
@@ -813,7 +813,7 @@
 | -------- | ------ | -------- | -------- |
 | response | 1      | Text     | 请求失败 |
 
-## /data/link
+## /data/links
 
 ```text
 光网络查询链路
@@ -825,7 +825,7 @@
 
 #### 接口URL
 
-> /data/link?linkId
+> /data/links?linkId
 
 #### 请求方式
 
@@ -839,7 +839,7 @@
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | ------ | ------ | -------- | -------- | -------- |
-| linkId |        | Text     | 是       | 链路id   |
+| linkId |        | Text     | 是       |          |
 
 #### 预执行脚本
 
@@ -910,7 +910,7 @@
 | -------- | ------ | -------- | -------- |
 | response | 1      | Text     | 请求失败 |
 
-## /data/node
+## /data/nodes
 
 ```text
 光网络查询节点
@@ -922,7 +922,7 @@
 
 #### 接口URL
 
-> /data/node?nodeId=
+> /data/nodes?nodeId=
 
 #### 请求方式
 
@@ -936,7 +936,7 @@
 
 | 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
 | ------ | ------ | -------- | -------- | -------- |
-| nodeId |        | Text     | 是       | 节点id   |
+| nodeId |        | Text     | 是       |          |
 
 #### 预执行脚本
 

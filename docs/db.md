@@ -1,6 +1,6 @@
-# 3Network
+# StaticData
 
-> 数据库
+> 静态数据数据库
 
 ## 主视图相关集合
 
@@ -24,18 +24,18 @@
         "duty": "娓奇"
     },
     "band": {
-        "light": [
-            "MD01",
-            "MD02"
-        ],
-        "data": [
-            "MD03",
-            "MD05"
-        ],
-        "emergency": [
-            "MD09",
-            "MD10"
-        ]
+        "light": {
+            "begin": "MD01",
+            "end": "MD02"
+        },
+        "data": {
+            "begin": "MD03",
+            "end": "MD05"
+        },
+        "emergency": {
+            "begin": "MD06",
+            "end": "MD10"
+        },
     }
 }
 ```
@@ -71,6 +71,86 @@
     "Topology": "img/1.jpg"
 }
 ```
+
+## 光网络相关集合
+
+### LightNetworkLinkInfo
+
+> 集合
+>
+> 光网络链路信息。
+```json
+{
+    "id": "",
+    "name": "",
+    "node1ID": "",
+    "node1Name": "",
+    "node2ID": "",
+    "node2Name": "",
+    "contain": "",
+    "state": ""
+}
+
+```
+
+## 时频网络相关集合
+
+### TimeNetworkLinkInfo
+
+> 集合
+>
+> 时频网络链路信息。
+```json
+{
+    "id": "",
+    "name": "",
+    "node1ID": "",
+    "node1Name": "",
+    "node2ID": "",
+    "node2Name": "",
+    "band": "",
+}
+```
+
+## 数据网络相关集合
+
+### DataNetworkBasicInfo
+
+> 集合
+>
+> 数据网络基本信息。
+```json
+{
+    "bandUsed": "",
+    "bandTotal": "",
+    "linkNum": 9121,
+    "nodeNum": 1000,
+    "Timestamp": 1753,
+    "Location": 13541,
+}
+```
+
+### DataNetworkLinkBasicInfo
+> 集合
+>
+> 数据网络链路信息。
+```json
+{
+    "id": "",
+    "name": "",
+    "node1ID": "",
+    "node1Name": "",
+    "node2ID": "",
+    "node2Name": "",
+    "band": ""
+}
+```
+
+
+# DynamicData
+
+> 动态数据数据库
+
 
 ### NodeMessage
 > 集合
@@ -116,89 +196,23 @@
 
 
 
-
-
-## 光网络相关集合
-
-### LightNetworkLinkInfo
-
+### DataNetworkErrorAlarm
 > 集合
 >
-> 光网络链路信息。
+> 数据网络接收报文。
 ```json
 {
     "id": "",
-    "name": "",
-    "node1ID": "",
-    "node1Name": "",
-    "node2ID": "",
-    "node2Name": "",
-    "contain": "",
-    "state": ""
-}
-
-```
-
-
-
-
-
-## 时频网络相关集合
-
-### TimeNetworkLinkInfo
-
-> 集合
->
-> 时频网络链路信息。
-```json
-{
-    "id": "",
-    "name": "",
-    "node1ID": "",
-    "node1Name": "",
-    "node2ID": "",
-    "node2Name": "",
-    "band": "",
+    "rTime": "1613724232.828657",
+    "type" : "",
+    "level": "",
+    "msg": "",
+    "state": "",
+    "beginNode": "",
+    "endNode": ""
 }
 ```
 
-
-
-
-
-## 数据网络相关集合
-
-### DataNetworkBasicInfo
-
-> 集合
->
-> 数据网络基本信息。
-```json
-{
-    "bandUsed": "",
-    "bandTotal": "",
-    "linkNum": 9121,
-    "nodeNum": 1000,
-    "Timestamp": 1753,
-    "Location": 13541,
-}
-```
-
-### DataNetworkLinkBasicInfo
-> 集合
->
-> 数据网络链路信息。
-```json
-{
-    "id": "",
-    "name": "",
-    "node1ID": "",
-    "node1Name": "",
-    "node2ID": "",
-    "node2Name": "",
-    "band": ""
-}
-```
 
 ### DataNetworkLinkDetail
 
@@ -228,21 +242,3 @@
     //PB
 }
 ```
-
-### DataNetworkErrorAlarm
-> 集合
->
-> 数据网络接收报文。
-```json
-{
-    "id": "",
-    "rTime": "1613724232.828657",
-    "type" : "",
-    "level": "",
-    "msg": "",
-    "state": "",
-    "beginNode": "",
-    "endNode": ""
-}
-```
-
