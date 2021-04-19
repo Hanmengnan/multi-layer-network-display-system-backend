@@ -1,4 +1,4 @@
-package api
+package httpRequest
 
 import "github.com/gin-gonic/gin"
 

@@ -85,5 +85,4 @@ func GetSituationHandleInfo() map[string][]situationHandleInfo {
 	err = cursor.Close(context.TODO())
 
 	return situationHandle
-
 }

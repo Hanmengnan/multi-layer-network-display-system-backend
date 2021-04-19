@@ -6,7 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"3network-backend/src/router/api"
+	"3network-backend/src/router/httpRequest"
+	"3network-backend/src/router/webSocket"
 )
 
 var (
@@ -18,18 +19,20 @@ var (
 func init() {
 	router = gin.Default()
 	//主视图路由
-	router.GET("/", api.HomeView)
+	router.GET("/", httpRequest.HomeView)
+	router.GET("/situaionHandle", webSocket.SituationHandle)
+
 	//光网络路由
-	router.GET("/light", api.LightNetworkView)
-	router.GET("/light/nodesAndLinks", api.LightNodesAndLinks)
-	router.POST("/link/bandSet", api.BandSet)
+	router.GET("/light", httpRequest.LightNetworkView)
+	router.GET("/light/nodesAndLinks", httpRequest.LightNodesAndLinks)
+	router.POST("/link/bandSet", httpRequest.BandSet)
 	//数据网络路由
-	router.GET("/data", api.DataNetworkView)
-	router.GET("/data/nodes", api.DataNetworkNodes)
-	router.GET("/data/links", api.DataNetworkLinks)
+	router.GET("/data", httpRequest.DataNetworkView)
+	router.GET("/data/nodes", httpRequest.DataNetworkNodes)
+	router.GET("/data/links", httpRequest.DataNetworkLinks)
 	//时频网络路由
-	router.GET("/time", api.TimeNetworkView)
-	router.GET("/time/links", api.TimeNetworkLinks)
+	router.GET("/time", httpRequest.TimeNetworkView)
+	router.GET("/time/links", httpRequest.TimeNetworkLinks)
 
 	server = &http.Server{
 		Addr:           ":8090",
