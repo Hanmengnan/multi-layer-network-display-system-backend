@@ -28,8 +28,10 @@ func init() {
 	router.POST("/link/bandSet", httpRequest.BandSet)
 	//数据网络路由
 	router.GET("/data", httpRequest.DataNetworkView)
-	router.GET("/data/nodes", httpRequest.DataNetworkNodes)
-	router.GET("/data/links", httpRequest.DataNetworkLinks)
+	router.GET("/data/nodes", httpRequest.DataNetworkNodeDetail)
+	router.GET("/data/links", httpRequest.DataNetworkLinksDetail)
+	router.GET("data/flowChange", webSocket.DataNetworkFlowChange)
+
 	//时频网络路由
 	router.GET("/time", httpRequest.TimeNetworkView)
 	router.GET("/time/links", httpRequest.TimeNetworkLinks)

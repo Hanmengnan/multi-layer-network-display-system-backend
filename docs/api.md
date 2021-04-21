@@ -740,6 +740,27 @@
     "nodeNum": 1000,
     "Timestamp": 1753,
     "Location": 13541,
+    "nodes": [
+        {
+            "id": "SH001",
+            "name": "上海站",
+            "city": "上海",
+            "state": "正常",
+            "location": {
+                "type": "Ponit",
+                "coordinates": [
+                    121.4648,
+                    31.2891
+                ]
+            },
+            "type": "业务上下站",
+            "Precision": "最高时钟基准",
+            "error": "5",
+            "throughput": "900",
+            "forwardingRate": "0.8",
+            "Topology": "img/3.jpg"
+        }
+    ],
     "links": [
         {
             "id": "",
@@ -860,14 +881,11 @@
     "response": 0,
     "id": "",
     "name": "",
-    "node1ID": "",
+    "node1Id": "",
     "node1Name": "",
-    "node2ID": "",
+    "node2Id": "",
     "node2Name": "",
     "band": "",
-    "precisionError": 12,
-    "loss": 0.01,
-    "used": 0.59,
     "detail": [
         {
             "time": "1613724232.828657",

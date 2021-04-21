@@ -1,10 +1,10 @@
-# StaticData
+# networkStaticData
 
 > 静态数据数据库
 
 ## 主视图相关集合
 
-### BasicInfo
+### basicInfo
 
 > 集合
 >
@@ -40,7 +40,7 @@
 }
 ```
 
-### NodeInfo
+### nodeInfo
 > 集合
 >
 > 节点及其信息。
@@ -52,29 +52,21 @@
     "city": "北京",
     "state": "正常", // 正常、繁忙、拥塞、故障    
     "location": {
-        "Ing": [
-            116,
-            23,
-            17
-        ],
-        "lat": [
-            39,
-            54,
-            27
-        ]
+        "type":"Ponit",
+        "coordinates": [116.4551,40.2539]
     },
     "type": "业务上下站", // 光中继站、电中继站、城域汇聚站    
     "Precision": "最高时钟基准", // 超高时钟基准、次高时钟基准、时钟网关、非时频网络节点    
-    "error": "5ms",
-    "throughput": 1000,
-    "forwardingRate": 0.9
+    "error": "5",
+    "throughput": "1000",
+    "forwardingRate": "0.9",
     "Topology": "img/1.jpg"
 }
 ```
 
 ## 光网络相关集合
 
-### LightNetworkLinkInfo
+### lightNetworkLinkInfo
 
 > 集合
 >
@@ -95,7 +87,7 @@
 
 ## 时频网络相关集合
 
-### TimeNetworkLinkInfo
+### timeNetworkLinkInfo
 
 > 集合
 >
@@ -114,45 +106,56 @@
 
 ## 数据网络相关集合
 
-### DataNetworkBasicInfo
+### dataNetworkBasicInfo
 
 > 集合
 >
 > 数据网络基本信息。
 ```json
 {
-    "bandUsed": "",
-    "bandTotal": "",
+    "bandUsed": 100,
+    "bandTotal": 300,
     "linkNum": 9121,
     "nodeNum": 1000,
-    "Timestamp": 1753,
-    "Location": 13541,
+    "timestampNum": 1753,
+    "location": 13541,
 }
 ```
 
-### DataNetworkLinkBasicInfo
+### dataNetworkLinkInfo
 > 集合
 >
 > 数据网络链路信息。
 ```json
 {
-    "id": "",
-    "name": "",
-    "node1ID": "",
-    "node1Name": "",
-    "node2ID": "",
-    "node2Name": "",
-    "band": ""
+    "id": "BJ_SJZ_01",
+    "name": "北京-石家庄-01",
+    "node1ID": "BJ001",
+    "node1Name": "北京站",
+    "node2ID": "SJZ001",
+    "node2Name": "石家庄站",
+    "band": "MD01"
 }
 ```
 
+### dataNetworkNodeInfo
 
-# DynamicData
+> 集合
+>
+> 数据网络节点信息
+
+```json
+
+```
+
+
+
+# networkDynamicData
 
 > 动态数据数据库
 
 
-### NodeMessage
+### nodeMessage
 > 集合
 >
 > 节点收到的报文。
@@ -164,7 +167,7 @@
 }
 ```
 
-### FlowChange
+### flowChange
 
 > 集合
 >
@@ -178,7 +181,7 @@
 }
 ```
 
-### SituationHandle
+### situationHandle
 > 集合
 >
 > 事件处理。
@@ -196,7 +199,7 @@
 
 
 
-### DataNetworkErrorAlarm
+### dataNetworkErrorAlarm
 > 集合
 >
 > 数据网络接收报文。
@@ -204,17 +207,18 @@
 {
     "id": "",
     "rTime": "1613724232.828657",
-    "type" : "",
+    "type" : 0,
     "level": "",
-    "msg": "",
+    "message": "",
     "state": "",
-    "beginNode": "",
-    "endNode": ""
+    "fromNodeId": "",
+    "toNodeId": ""
+    
 }
 ```
 
 
-### DataNetworkLinkDetail
+### dataNetworkLinkDetail
 
 >集合
 >
@@ -222,7 +226,7 @@
 
 ```json
 {
-    "lId": "",
+    "id": "",
     "time": "1613724232.828657",
     "precisionError": 12,
     "loss": 0.01,
@@ -230,15 +234,15 @@
 }
 ```
 
-### DataNetworkFlowChange
+### dataNetworkFlowChange
 
 > 集合
 >
 > 数据网络流量变化。
 ```json
 {
-    "time": "1613724232.828657",
-    "flowData": "80",
+    "time": "1618893866",
+    "flowData": 80
     //PB
 }
 ```

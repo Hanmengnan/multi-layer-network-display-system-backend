@@ -2,7 +2,6 @@ package model
 
 import (
 	"context"
-	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -79,8 +78,6 @@ func GetSituationHandleInfo() map[string][]situationHandleInfo {
 	situationHandle["handled"] = closure("2")
 	situationHandle["handling"] = closure("1")
 	situationHandle["unhandled"] = closure("0")
-
-	fmt.Printf("%v", situationHandle)
 
 	err = cursor.Close(context.TODO())
 

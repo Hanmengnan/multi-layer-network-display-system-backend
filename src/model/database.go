@@ -3,6 +3,8 @@ package model
 import (
 	"context"
 	"fmt"
+	"log"
+	"reflect"
 	"time"
 
 	config "3network-backend/src/config"
@@ -16,7 +18,6 @@ var (
 	staticDatabase  *mongo.Database
 	dynamicDatabase *mongo.Database
 	err             error
-	ctx, _          = context.WithTimeout(context.Background(), 5*time.Second)
 )
 
 func init() {
@@ -24,6 +25,7 @@ func init() {
 }
 
 func connect() {
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	databaseURI := fmt.Sprintf("mongodb://%s:%s@%s:%s/", config.DATABASE_USERNAME, config.DATABASE_PASSWORD, config.DATABASE_IP, config.DATABASE_PORT)
 	client, err = mongo.Connect(ctx, options.Client().ApplyURI(databaseURI))
 	if err != nil {
@@ -35,8 +37,21 @@ func connect() {
 }
 
 func Disconnect() {
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	err = client.Disconnect(ctx)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func find(info interface{}, cursor *mongo.Cursor) []interface{} {
+	var infoList []interface{}
+	for cursor.Next(context.TODO()) {
+		err = cursor.Decode(info)
+		if err != nil {
+			log.Fatal(err)
+		}
+		infoList = append(infoList, reflect.ValueOf(info).Interface())
+	}
+	return infoList
 }

@@ -12,8 +12,8 @@ var (
 )
 
 func HomeView(c *gin.Context) {
-	rawData := database.GetSystemBasicInfo()
-	c.JSON(http.StatusOK, *rawData)
+	res := database.GetSystemBasicInfo()
+	c.JSON(http.StatusOK, *res)
 }
 
 func HandleSituation(c *gin.Context) {
