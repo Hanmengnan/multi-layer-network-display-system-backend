@@ -144,12 +144,12 @@ func GetDataNetworkLinkDetail(linkId string) []DataNetworkLinkDetail {
 	findOptions.SetLimit(30 * 24)
 
 	cursor, err = staticDatabase.Collection("dataNetworkLinkDetail").Find(context.TODO(), bson.M{"id": linkId}, findOptions)
-	res := find(info, cursor)
+	find(info, &infoList, cursor)
 	err = cursor.Close(context.TODO())
 
-	for _, item := range res {
-		infoList = append(infoList, *item.(*DataNetworkLinkDetail))
-	}
+	//for _, item := range res {
+	//	infoList = append(infoList, *item.(*DataNetworkLinkDetail))
+	//}
 	return infoList
 }
 
@@ -175,14 +175,10 @@ func GetDataNetworkErrorALarms() []DataNetworkErrorAlarm {
 func GetDataNetworkFlow() []DataNetworkFlow {
 	var cursor *mongo.Cursor
 	var infoList []DataNetworkFlow
-	info := new(DataNetworkFlow)
-
+	var info DataNetworkFlow
 	cursor, err = staticDatabase.Collection("dataNetworkFlowChange").Find(context.TODO(), bson.M{})
-	res := find(info, cursor)
+	find(&info, &infoList, cursor)
+	fmt.Printf("%v", infoList)
 	err = cursor.Close(context.TODO())
-
-	for _, item := range res {
-		infoList = append(infoList, *item.(*DataNetworkFlow))
-	}
 	return infoList
 }

@@ -44,14 +44,16 @@ func Disconnect() {
 	}
 }
 
-func find(info interface{}, cursor *mongo.Cursor) []interface{} {
-	var infoList []interface{}
+func find(info interface{}, infoList interface{}, cursor *mongo.Cursor) {
+	infoListValue := reflect.ValueOf(infoList).Elem()
+	resEleArray := make([]reflect.Value, 0)
+
 	for cursor.Next(context.TODO()) {
 		err = cursor.Decode(info)
 		if err != nil {
 			log.Fatal(err)
 		}
-		infoList = append(infoList, reflect.ValueOf(info).Interface())
+		resEleArray = append(resEleArray, reflect.ValueOf(info).Elem())
 	}
-	return infoList
+	infoListValue.Set(reflect.Append(infoListValue, resEleArray...))
 }
