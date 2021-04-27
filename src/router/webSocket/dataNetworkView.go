@@ -6,13 +6,13 @@ import (
 	"net/http"
 )
 
-type dataNetworkFlowChangeResponse struct {
-	Response   string
-	FlowChange []database.DataNetworkFlow
+type flowChangeResponse struct {
+	Response   int64
+	FlowChange []database.NetworkFlow
 }
 
-func DataNetworkFlowChange(c *gin.Context) {
-	rawData := database.GetDataNetworkFlow()
-	res := dataNetworkFlowChangeResponse{Response: "0", FlowChange: rawData}
+func FlowChange(c *gin.Context) {
+	rawData := database.GetNetworkFlow()
+	res := flowChangeResponse{Response: 0, FlowChange: rawData}
 	c.JSON(http.StatusOK, res)
 }

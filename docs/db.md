@@ -35,7 +35,7 @@
         "emergency": {
             "begin": "MD06",
             "end": "MD10"
-        },
+        }
     }
 }
 ```
@@ -145,7 +145,7 @@
 }
 ```
 
-### linkErrorAlarm
+### linkMessage
 > 集合
 >
 > 数据网络接收报文。
@@ -159,7 +159,6 @@
     "state": "",
     "fromNodeId": "",
     "toNodeId": ""
-    
 }
 ```
 

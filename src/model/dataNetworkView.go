@@ -2,60 +2,27 @@ package model
 
 import (
 	"context"
-	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
 )
-
-type location struct {
-	Type        string
-	Coordinates []float64
-}
 
 type DataNetworkBasicInfo struct {
 	_id          primitive.ObjectID `json:"id" bson:"_id"`
-	BandUsed     int
-	BandTotal    int
-	LinkNum      int
-	NodeNum      int
-	TimestampNum int
-	LocationNum  int
-}
-
-type DataNetworkLinkInfo struct {
-	_id       primitive.ObjectID `json:"id" bson:"_id"`
-	Id        string
-	Name      string
-	Node1Id   string
-	Node1Name string
-	Node2Id   string
-	Node2Name string
-	Band      string
-}
-
-type DataNetworkNodeInfo struct {
-	_id            primitive.ObjectID `json:"id" bson:"_id"`
-	Id             string
-	Name           string
-	City           string
-	state          string
-	Location       location
-	Type           string
-	Precision      string  `json:"precision"`
-	Error          int     `json:"error"`
-	Throughput     int     `json:"throughput"`
-	ForwardingRate float64 `json:"forwardingRate"`
-	Topology       string  `json:"topology"`
+	BandUsed     int64
+	BandTotal    int64
+	LinkNum      int64
+	NodeNum      int64
+	TimestampNum int64
+	LocationNum  int64
 }
 
 type DataNetworkErrorAlarm struct {
 	_id        primitive.ObjectID `json:"id" bson:"_id"`
 	Id         string
 	RTime      string
-	Type       int
+	Type       int64
 	Level      string
 	Message    string
 	State      string
@@ -63,7 +30,7 @@ type DataNetworkErrorAlarm struct {
 	ToNodeId   string
 }
 
-type DataNetworkLinkDetail struct {
+type LinkDetail struct {
 	_id            primitive.ObjectID `json:"id" bson:"_id"`
 	Id             string
 	Time           string
@@ -72,113 +39,81 @@ type DataNetworkLinkDetail struct {
 	Used           float64
 }
 
-type DataNetworkFlow struct {
-	_id      primitive.ObjectID `json:"id" bson:"_id"`
-	Time     string
-	FlowData string
+type NodeDetail struct {
+	_id            primitive.ObjectID `json:"id" bson:"_id"`
+	Precision      string             `json:"precision"`
+	Error          int64              `json:"error"`
+	Throughput     int64              `json:"throughput"`
+	ForwardingRate float64            `json:"forwardingRate"`
 }
 
 func GetDataNetworkBasicInfo() *DataNetworkBasicInfo {
 	var info DataNetworkBasicInfo
 	res := staticDatabase.Collection("dataNetworkBasicInfo").FindOne(context.TODO(), bson.M{})
 	err = res.Decode(&info)
-	if err != nil {
-		log.Fatal(err)
-	}
 	return &info
 }
 
-func GetDataNetworkLinkInfo(linkId ...string) []DataNetworkLinkInfo {
-	fmt.Printf("%v", linkId)
-	var info DataNetworkLinkInfo
-	var infoList []DataNetworkLinkInfo
-	if len(linkId) == 0 {
-		var cursor *mongo.Cursor
-		cursor, err = staticDatabase.Collection("dataNetworkLinkInfo").Find(context.TODO(), bson.M{})
-		if err != nil {
-			log.Fatal(err)
-		}
-		for cursor.Next(context.TODO()) {
-			err = cursor.Decode(&info)
-			if err != nil {
-				log.Fatal(err)
-			}
-			infoList = append(infoList, info)
-		}
-		cursor.Close(context.TODO())
-		return infoList
-	} else {
-		res := staticDatabase.Collection("dataNetworkLinkDetail").FindOne(context.TODO(), bson.M{"id": linkId[0]})
-		err = res.Decode(&info)
-		infoList = append(infoList, info)
-		return infoList
-	}
-}
-
-func GetDataNetworkNodeInfo() []DataNetworkNodeInfo {
-	var info DataNetworkNodeInfo
-	var infoList []DataNetworkNodeInfo
+func GetDataNetworkLinkInfo() []LinkInfo {
 	var cursor *mongo.Cursor
-	cursor, err = staticDatabase.Collection("dataNetworkLinkInfo").Find(context.TODO(), bson.M{"type": "业务上下站"})
-	if err != nil {
-		log.Fatal(err)
-	}
-	for cursor.Next(context.TODO()) {
-		err = cursor.Decode(&info)
-		if err != nil {
-			log.Fatal(err)
-		}
-		infoList = append(infoList, info)
-	}
-	cursor.Close(context.TODO())
+	var info LinkInfo
+	var infoList []LinkInfo
+	cursor, err = staticDatabase.Collection("linkInfo").Find(context.TODO(), bson.M{})
+	find(&info, &infoList, cursor)
+	err = cursor.Close(context.TODO())
 	return infoList
 }
 
-func GetDataNetworkLinkDetail(linkId string) []DataNetworkLinkDetail {
+func GetDataNetworkLinkDetail(linkId string) []LinkDetail {
 	var cursor *mongo.Cursor
-	var infoList []DataNetworkLinkDetail
-	info := new(DataNetworkLinkDetail)
-
+	var infoList []LinkDetail
+	var info LinkDetail
 	findOptions := options.Find()
 	findOptions.SetSort(bson.D{{"time", -1}})
 	findOptions.SetLimit(30 * 24)
 
-	cursor, err = staticDatabase.Collection("dataNetworkLinkDetail").Find(context.TODO(), bson.M{"id": linkId}, findOptions)
-	find(info, &infoList, cursor)
+	cursor, err = staticDatabase.Collection("linkDetail").Find(context.TODO(), bson.M{"id": linkId}, findOptions)
+	find(&info, &infoList, cursor)
 	err = cursor.Close(context.TODO())
-
-	//for _, item := range res {
-	//	infoList = append(infoList, *item.(*DataNetworkLinkDetail))
-	//}
 	return infoList
 }
+
+func GetDataNetworkNodeInfo() []NodeInfo {
+	var cursor *mongo.Cursor
+	var infoList []NodeInfo
+	var info NodeInfo
+	cursor, err = staticDatabase.Collection("nodeInfo").Find(context.TODO(), bson.M{})
+	find(&info, &infoList, cursor)
+	err = cursor.Close(context.TODO())
+	return infoList
+}
+
+// 节点的详细信息大部分是与报文相关
+// 未完成
+
+func GetDataNetworkNodeDetail(nodeId string) []NodeDetail {
+	var cursor *mongo.Cursor
+	var infoList []NodeDetail
+	var info NodeDetail
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{"time", -1}})
+	findOptions.SetLimit(30 * 24)
+
+	cursor, err = staticDatabase.Collection("linkDetail").Find(context.TODO(), bson.M{"id": nodeId}, findOptions)
+	find(&info, &infoList, cursor)
+	err = cursor.Close(context.TODO())
+	return infoList
+}
+
+// 该预警是链路预警
+// 未完成
 
 func GetDataNetworkErrorALarms() []DataNetworkErrorAlarm {
-	var info DataNetworkErrorAlarm
+	var cursor *mongo.Cursor
 	var infoList []DataNetworkErrorAlarm
-	var cursor *mongo.Cursor
-	cursor, err = staticDatabase.Collection("dataNetworkLinkInfo").Find(context.TODO(), bson.M{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	for cursor.Next(context.TODO()) {
-		err = cursor.Decode(&info)
-		if err != nil {
-			log.Fatal(err)
-		}
-		infoList = append(infoList, info)
-	}
-	cursor.Close(context.TODO())
-	return infoList
-}
-
-func GetDataNetworkFlow() []DataNetworkFlow {
-	var cursor *mongo.Cursor
-	var infoList []DataNetworkFlow
-	var info DataNetworkFlow
-	cursor, err = staticDatabase.Collection("dataNetworkFlowChange").Find(context.TODO(), bson.M{})
+	var info DataNetworkErrorAlarm
+	cursor, err = staticDatabase.Collection("dataNetworkErrorAlarm").Find(context.TODO(), bson.M{})
 	find(&info, &infoList, cursor)
-	fmt.Printf("%v", infoList)
 	err = cursor.Close(context.TODO())
 	return infoList
 }

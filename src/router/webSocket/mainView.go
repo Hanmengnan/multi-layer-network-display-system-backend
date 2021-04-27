@@ -33,3 +33,17 @@ func SituationHandle(c *gin.Context) {
 		}
 	}()
 }
+
+func NodeMessage(c *gin.Context) {
+	connection, err = upgrader.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	go func() {
+		info := database.GetSituationHandleInfo()
+		err = connection.WriteJSON(info)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+}
