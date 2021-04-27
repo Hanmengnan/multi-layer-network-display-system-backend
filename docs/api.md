@@ -224,6 +224,89 @@
 | nodes.forwardingRate       | 0.8          | Text     |          |
 | nodes.Topology             | img/3.jpg    | Text     |          |
 
+## /links
+
+```text
+光网络查询链路
+```
+
+#### 接口状态
+
+> 需修改
+
+#### 接口URL
+
+> /data/links
+
+#### 请求方式
+
+> GET
+
+#### Content-Type
+
+> form-data
+
+#### 预执行脚本
+
+```javascript
+暂无预执行脚本
+```
+
+#### 后执行脚本
+
+```javascript
+暂无后执行脚本
+```
+
+#### 成功响应示例
+
+```javascript
+{
+	"response": 0,
+	"links": [
+		{
+			"id": "",
+			"name": "",
+			"node1ID": "",
+			"node1Name": "",
+			"node2ID": "",
+			"node2Name": "",
+			"band": "",
+			"state": "",
+			"error": "",
+			"loss": ""
+		}
+	]
+}
+```
+
+| 参数名          | 示例值 | 参数类型 | 参数描述 |
+| --------------- | ------ | -------- | -------- |
+| response        | 0      | Text     | 请求成功 |
+| links           |        | Text     |          |
+| links.id        |        | Text     |          |
+| links.name      |        | Text     |          |
+| links.node1ID   |        | Text     |          |
+| links.node1Name |        | Text     |          |
+| links.node2ID   |        | Text     |          |
+| links.node2Name |        | Text     |          |
+| links.band      |        | Text     |          |
+| links.state     |        | Text     |          |
+| links.error     |        | Text     |          |
+| links.loss      |        | Text     |          |
+
+#### 成功响应示例
+
+```javascript
+{
+    "response": 1
+}
+```
+
+| 参数名   | 示例值 | 参数类型 | 参数描述 |
+| -------- | ------ | -------- | -------- |
+| response | 1      | Text     | 请求失败 |
+
 ## /situationHandle
 
 ```text
@@ -424,83 +507,6 @@
 | -------- | ------ | -------- | -------- |
 | response | 1      | Text     | 请求失败 |
 
-## /light/links
-
-```text
-光网络节点与链路
-```
-
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> /light/links
-
-#### 请求方式
-
-> GET
-
-#### Content-Type
-
-> form-data
-
-#### 预执行脚本
-
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-#### 成功响应示例
-
-```javascript
-{
-	"response": 0,
-	"links": [
-		{
-			"id": "",
-			"name": "",
-			"node1ID": "",
-			"node1Name": "",
-			"node2ID": "",
-			"node2Name": "",
-			"contain": ""
-		}
-	]
-}
-```
-
-| 参数名          | 示例值 | 参数类型 | 参数描述 |
-| --------------- | ------ | -------- | -------- |
-| response        | 0      | Text     | 请求成功 |
-| links           |        | Text     |          |
-| links.id        |        | Text     |          |
-| links.name      |        | Text     |          |
-| links.node1ID   |        | Text     |          |
-| links.node1Name |        | Text     |          |
-| links.node2ID   |        | Text     |          |
-| links.node2Name |        | Text     |          |
-| links.contain   |        | Text     |          |
-
-#### 成功响应示例
-
-```javascript
-{
-	"response": 1
-}
-```
-
-| 参数名   | 示例值 | 参数类型 | 参数描述 |
-| -------- | ------ | -------- | -------- |
-| response | 1      | Text     | 请求失败 |
-
 ## /light/bandNum
 
 ```text
@@ -666,71 +672,6 @@
 | -------- | ------ | -------- | -------- |
 | response | 1      | Text     | 请求失败 |
 
-## /time/links
-
-```text
-暂无描述
-```
-
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> 未填写
-
-#### 请求方式
-
-> GET
-
-#### Content-Type
-
-> form-data
-
-#### 预执行脚本
-
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-#### 成功响应示例
-
-```javascript
-{
-	"response": 0,
-	"links": [
-		{
-			"id": "",
-			"name": "",
-			"node1ID": "",
-			"node1Name": "",
-			"node2ID": "",
-			"node2Name": "",
-			"band": ""
-		}
-	]
-}
-```
-
-| 参数名          | 示例值 | 参数类型 | 参数描述 |
-| --------------- | ------ | -------- | -------- |
-| response        | 0      | Text     | 请求成功 |
-| links           |        | Text     |          |
-| links.id        |        | Text     |          |
-| links.name      |        | Text     |          |
-| links.node1ID   |        | Text     |          |
-| links.node1Name |        | Text     |          |
-| links.node2ID   |        | Text     |          |
-| links.node2Name |        | Text     |          |
-| links.band      |        | Text     |          |
-
 ## /data
 
 ```text
@@ -800,146 +741,6 @@
 | 参数名   | 示例值 | 参数类型 | 参数描述 |
 | -------- | ------ | -------- | -------- |
 | response | 1      | Text     | 请求失败 |
-
-## /data/links
-
-```text
-光网络查询链路
-```
-
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> /data/links
-
-#### 请求方式
-
-> GET
-
-#### Content-Type
-
-> form-data
-
-#### 预执行脚本
-
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-#### 成功响应示例
-
-```javascript
-{
-	"response": 0,
-	"links": [
-		{
-			"id": "",
-			"name": "",
-			"node1ID": "",
-			"node1Name": "",
-			"node2ID": "",
-			"node2Name": "",
-			"band": "",
-			"state": "",
-			"error": "",
-			"loss": ""
-		}
-	]
-}
-```
-
-| 参数名          | 示例值 | 参数类型 | 参数描述 |
-| --------------- | ------ | -------- | -------- |
-| response        | 0      | Text     | 请求成功 |
-| links           |        | Text     |          |
-| links.id        |        | Text     |          |
-| links.name      |        | Text     |          |
-| links.node1ID   |        | Text     |          |
-| links.node1Name |        | Text     |          |
-| links.node2ID   |        | Text     |          |
-| links.node2Name |        | Text     |          |
-| links.band      |        | Text     |          |
-| links.state     |        | Text     |          |
-| links.error     |        | Text     |          |
-| links.loss      |        | Text     |          |
-
-#### 成功响应示例
-
-```javascript
-{
-    "response": 1
-}
-```
-
-| 参数名   | 示例值 | 参数类型 | 参数描述 |
-| -------- | ------ | -------- | -------- |
-| response | 1      | Text     | 请求失败 |
-
-## /data/flow
-
-```text
-暂无描述
-```
-
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> data/flow
-
-#### 请求方式
-
-> GET
-
-#### Content-Type
-
-> form-data
-
-#### 预执行脚本
-
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-#### 成功响应示例
-
-```javascript
-{
-	"response": 0,
-	"flowChange": [
-		{
-			"time": "1613724232.828657",
-			"flowData": "80",
-			"rate": 0.9
-		}
-	]
-}
-```
-
-| 参数名              | 示例值            | 参数类型 | 参数描述 |
-| ------------------- | ----------------- | -------- | -------- |
-| response            | 0                 | Text     | 请求成功 |
-| flowChange          |                   | Text     |          |
-| flowChange.time     | 1613724232.828657 | Text     |          |
-| flowChange.flowData | 80                | Text     |          |
-| flowChange.rate     | 0.9               | Text     |          |
 
 ## /data/node
 
@@ -1021,7 +822,7 @@
 暂无后执行脚本
 ```
 
-## /dataErrorAlarm
+## /data/errorAlarm
 
 ```text
 暂无描述

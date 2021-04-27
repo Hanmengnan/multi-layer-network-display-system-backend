@@ -1,4 +1,4 @@
-# networkStaticData
+# 	networkStaticData
 
 > 静态数据数据库
 
@@ -64,13 +64,12 @@
 }
 ```
 
-## 光网络相关集合
-
-### lightNetworkLinkInfo
+### linkInfo
 
 > 集合
 >
-> 光网络链路信息。
+> 链路及其信息
+
 ```json
 {
     "id": "",
@@ -80,29 +79,17 @@
     "node2ID": "",
     "node2Name": "",
     "contain": "",
-    "state": ""
+    "bulided": true,
+    "band": "",
+    "usedForTime": true,
+    "usedForData": true
+    
 }
-
 ```
+
+## 光网络相关集合
 
 ## 时频网络相关集合
-
-### timeNetworkLinkInfo
-
-> 集合
->
-> 时频网络链路信息。
-```json
-{
-    "id": "",
-    "name": "",
-    "node1ID": "",
-    "node1Name": "",
-    "node2ID": "",
-    "node2Name": "",
-    "band": "",
-}
-```
 
 ## 数据网络相关集合
 
@@ -122,34 +109,6 @@
 }
 ```
 
-### dataNetworkLinkInfo
-> 集合
->
-> 数据网络链路信息。
-```json
-{
-    "id": "BJ_SJZ_01",
-    "name": "北京-石家庄-01",
-    "node1ID": "BJ001",
-    "node1Name": "北京站",
-    "node2ID": "SJZ001",
-    "node2Name": "石家庄站",
-    "band": "MD01"
-}
-```
-
-### dataNetworkNodeInfo
-
-> 集合
->
-> 数据网络节点信息
-
-```json
-
-```
-
-
-
 # networkDynamicData
 
 > 动态数据数据库
@@ -163,7 +122,12 @@
 {
     "id": "Bj001",
     "message": "正常",
-    "rTime": "1613724232.828657"
+    "rTime": "1613724232.828657",
+    "type": "",
+    "handler": "",
+    "handleTime": "",
+    "handleState": "",
+    "origin": ""
 }
 ```
 
@@ -181,25 +145,7 @@
 }
 ```
 
-### situationHandle
-> 集合
->
-> 事件处理。
-```json
-{
-    "id": "312",
-    "type": "",
-    "handler": "",
-    "handleTime": "",
-    "handleState": "",
-    "origin": "",
-    "message": ""
-}
-```
-
-
-
-### dataNetworkErrorAlarm
+### linkErrorAlarm
 > 集合
 >
 > 数据网络接收报文。
@@ -218,7 +164,7 @@
 ```
 
 
-### dataNetworkLinkDetail
+### linkDetail
 
 >集合
 >
@@ -231,18 +177,5 @@
     "precisionError": 12,
     "loss": 0.01,
     "used": 0.59
-}
-```
-
-### dataNetworkFlowChange
-
-> 集合
->
-> 数据网络流量变化。
-```json
-{
-    "time": "1618893866",
-    "flowData": 80
-    //PB
 }
 ```
