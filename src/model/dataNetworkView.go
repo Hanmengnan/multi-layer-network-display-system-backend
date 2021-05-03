@@ -6,23 +6,27 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"sort"
+	"time"
 )
 
 type DataNetworkBasicInfo struct {
-	_id          primitive.ObjectID `json:"id" bson:"_id"`
-	BandUsed     int64
-	BandTotal    int64
-	LinkNum      int64
-	NodeNum      int64
-	TimestampNum int64
-	LocationNum  int64
+	_id         primitive.ObjectID `json:"id" bson:"_id"`
+	BandUsed    int                `json:"bandUsed"`
+	BandTotal   int                `json:"bandTotal"`
+	LinkNum     int                `json:"linkNum"`
+	NodeNum     int                `json:"nodeNum"`
+	Timestamp   int                `json:"timestampNum"`
+	Location    int                `json:"locationNum"`
+	DaliFlow    float64            `json:"daliFlow"`
+	MonthlyFlow float64            `json:"monthlyFlow"`
 }
 
 type DataNetworkErrorAlarm struct {
 	_id        primitive.ObjectID `json:"id" bson:"_id"`
 	Id         string
 	RTime      string
-	Type       int64
+	Type       int
 	Level      string
 	Message    string
 	State      string
@@ -30,21 +34,39 @@ type DataNetworkErrorAlarm struct {
 	ToNodeId   string
 }
 
-type LinkDetail struct {
-	_id            primitive.ObjectID `json:"id" bson:"_id"`
-	Id             string
-	Time           string
-	PrecisionError float64
-	Loss           float64
-	Used           float64
+type ParameterChange struct {
+	_id            primitive.ObjectID `json:"id" bson:"_id" :"_id"`
+	Id             string             `json:"id"`
+	Time           time.Time          `json:"time"`
+	PrecisionError float64            `json:"precisionError"`
+	Loss           float64            `json:"loss"`
+	Used           float64            `json:"used"`
 }
 
 type NodeDetail struct {
 	_id            primitive.ObjectID `json:"id" bson:"_id"`
+	Name           string             `json:"name"`
 	Precision      string             `json:"precision"`
-	Error          int64              `json:"error"`
-	Throughput     int64              `json:"throughput"`
+	Error          int                `json:"error"`
+	Throughput     int                `json:"throughput"`
 	ForwardingRate float64            `json:"forwardingRate"`
+}
+
+type MessageDateStatistics struct {
+	ReceiveDate string
+	SiteId      string
+	//SiteName         string
+	NormalMessageNum int32
+	BusyMessageNum   int32
+	ErrorMessageNum  int32
+}
+
+type MessageLinkStatistics struct {
+	SiteId           string
+	LinkName         string
+	NormalMessageNum int32
+	BusyMessageNum   int32
+	ErrorMessageNum  int32
 }
 
 func GetDataNetworkBasicInfo() *DataNetworkBasicInfo {
@@ -54,66 +76,186 @@ func GetDataNetworkBasicInfo() *DataNetworkBasicInfo {
 	return &info
 }
 
-func GetDataNetworkLinkInfo() []LinkInfo {
-	var cursor *mongo.Cursor
+func GetLinkBasicInfo(linkId string) LinkInfo {
 	var info LinkInfo
-	var infoList []LinkInfo
-	cursor, err = staticDatabase.Collection("linkInfo").Find(context.TODO(), bson.M{})
-	find(&info, &infoList, cursor)
-	err = cursor.Close(context.TODO())
-	return infoList
+	err = staticDatabase.Collection("linkInfo").FindOne(context.TODO(), bson.M{"id": linkId}).Decode(&info)
+	return info
 }
 
-func GetDataNetworkLinkDetail(linkId string) []LinkDetail {
+func GetLinkParameterChange(linkId string) []ParameterChange {
 	var cursor *mongo.Cursor
-	var infoList []LinkDetail
-	var info LinkDetail
+	var infoList []ParameterChange
 	findOptions := options.Find()
 	findOptions.SetSort(bson.D{{"time", -1}})
 	findOptions.SetLimit(30 * 24)
 
-	cursor, err = staticDatabase.Collection("linkDetail").Find(context.TODO(), bson.M{"id": linkId}, findOptions)
-	find(&info, &infoList, cursor)
+	cursor, err = dynamicDatabase.Collection("linkDetail").Find(context.TODO(), bson.M{"id": linkId}, findOptions)
+	find(&infoList, cursor)
 	err = cursor.Close(context.TODO())
 	return infoList
 }
 
-func GetDataNetworkNodeInfo() []NodeInfo {
-	var cursor *mongo.Cursor
-	var infoList []NodeInfo
-	var info NodeInfo
-	cursor, err = staticDatabase.Collection("nodeInfo").Find(context.TODO(), bson.M{})
-	find(&info, &infoList, cursor)
-	err = cursor.Close(context.TODO())
+func GetLinkMessageOriginStatistics(linkId string) map[string]int32 {
+	infoList := make(map[string]int32)
+	var info LinkInfo
+	err = staticDatabase.Collection("linkInfo").FindOne(context.TODO(), bson.M{"id": linkId}).Decode(&info)
+
+	statistics1 := GetNodeMessageOriginStatistics(info.Node1Id)
+	statistics2 := GetNodeMessageOriginStatistics(info.Node2Id)
+
+	for key, value := range statistics1 {
+		if _, ok := infoList[key]; !ok {
+			infoList[key] = infoList[key] + value
+		} else {
+			infoList[key] = value
+		}
+	}
+	for key, value := range statistics2 {
+		if _, ok := infoList[key]; !ok {
+			infoList[key] = infoList[key] + value
+		} else {
+			infoList[key] = value
+		}
+	}
 	return infoList
 }
 
-// 节点的详细信息大部分是与报文相关
-// 未完成
-
-func GetDataNetworkNodeDetail(nodeId string) []NodeDetail {
-	var cursor *mongo.Cursor
-	var infoList []NodeDetail
+func GetNodeDetail(nodeId string) NodeDetail {
 	var info NodeDetail
-	findOptions := options.Find()
-	findOptions.SetSort(bson.D{{"time", -1}})
-	findOptions.SetLimit(30 * 24)
+	err = staticDatabase.Collection("nodeInfo").FindOne(context.TODO(), bson.M{"id": nodeId}).Decode(&info)
+	return info
+}
 
-	cursor, err = staticDatabase.Collection("linkDetail").Find(context.TODO(), bson.M{"id": nodeId}, findOptions)
-	find(&info, &infoList, cursor)
-	err = cursor.Close(context.TODO())
+func GetNodeMessageLinkStatistics(nodeId string) []MessageLinkStatistics {
+	var infoList []MessageLinkStatistics
+	var info NodeInfo
+	var res []bson.M
+	var cursor *mongo.Cursor
+
+	matchStage := bson.D{
+		{"$match", bson.D{{"nowSite", nodeId}}},
+	}
+	groupStage := bson.D{
+		{"$group", bson.D{
+			{"_id", bson.D{{"from", "$fromSite"}, {"type", "$type"}}},
+			{"count", bson.D{
+				{"$sum", 1},
+			}},
+		}},
+	}
+
+	sortStage := bson.D{{"$sort", bson.D{{"count", -1}}}}
+	limitStage := bson.D{{"$limit", 5}}
+
+	opts := options.Aggregate().SetMaxTime(5 * time.Second)
+	cursor, err = dynamicDatabase.Collection("nodeMessage").Aggregate(context.TODO(), mongo.Pipeline{matchStage, groupStage, sortStage, limitStage}, opts)
+	err = cursor.All(context.TODO(), &res)
+
+	err = staticDatabase.Collection("nodeInfo").FindOne(context.TODO(), bson.M{"id": nodeId}).Decode(&info)
+	nowNodeName := info.Name
+
+	tmp := make(map[string]map[string]int32)
+
+	for _, item := range res {
+		from := item["_id"].(primitive.M)["from"].(string)
+		msgType := item["_id"].(primitive.M)["type"].(string)
+		count := item["count"].(int32)
+		if _, ok := tmp[from]; !ok {
+			tmp[from] = map[string]int32{"正常": 0, "繁忙": 0, "故障": 0}
+		}
+		tmp[from][msgType] = count
+	}
+	for key, value := range tmp {
+		err = staticDatabase.Collection("nodeInfo").FindOne(context.TODO(), bson.M{"id": key}).Decode(&info)
+		infoList = append(infoList, MessageLinkStatistics{nodeId, nowNodeName + "-" + info.Name, value["正常"], value["繁忙"], value["故障"]})
+	}
 	return infoList
 }
 
-// 该预警是链路预警
-// 未完成
+func GetNodeMessageDateStatistics(nodeId string) []MessageDateStatistics {
+	var infoList []MessageDateStatistics
+	var res []bson.M
+	var cursor *mongo.Cursor
+
+	matchStage := bson.D{
+		{"$match", bson.D{{"nowSite", nodeId}}},
+	}
+	groupStage := bson.D{
+		{"$group", bson.D{
+			{"_id", bson.D{
+				{"date", bson.D{{"$dateToString", bson.D{{"format", "%Y-%m-%d"}, {"date", "$rTime"}}}}},
+				{"type", "$type"},
+			}},
+			{"count", bson.D{
+				{"$sum", 1},
+			}},
+		}},
+	}
+
+	sortStage := bson.D{{"$sort", bson.D{{"_id.date", -1}}}}
+	limitStage := bson.D{{"$limit", 30}}
+
+	opts := options.Aggregate().SetMaxTime(5 * time.Second)
+	cursor, err = dynamicDatabase.Collection("nodeMessage").Aggregate(context.TODO(), mongo.Pipeline{matchStage, groupStage, sortStage, limitStage}, opts)
+	err = cursor.All(context.TODO(), &res)
+
+	tmp := make(map[string]map[string]int32)
+
+	for _, item := range res {
+		date := item["_id"].(primitive.M)["date"].(string)
+		msgType := item["_id"].(primitive.M)["type"].(string)
+		count := item["count"].(int32)
+		if _, ok := tmp[date]; !ok {
+			tmp[date] = map[string]int32{"正常": 0, "繁忙": 0, "故障": 0}
+		}
+		tmp[date][msgType] = count
+	}
+	for key, value := range tmp {
+		infoList = append(infoList, MessageDateStatistics{key, nodeId, value["正常"], value["繁忙"], value["故障"]})
+	}
+	sort.Slice(infoList, func(i, j int) bool {
+		return infoList[i].ReceiveDate < infoList[j].ReceiveDate
+	})
+	return infoList
+}
+
+func GetNodeMessageOriginStatistics(nodeId string) map[string]int32 {
+	var cursor *mongo.Cursor
+	var info NodeInfo
+	infoList := make(map[string]int32)
+	var res []bson.M
+
+	matchStage := bson.D{
+		{"$match", bson.D{{"nowSite", nodeId}}},
+	}
+	groupStage := bson.D{
+		{"$group", bson.D{
+			{"_id", "$originSite"},
+			{"count", bson.D{
+				{"$sum", 1}},
+			},
+		}},
+	}
+	sortStage := bson.D{{"$sort", bson.D{{"count", -1}}}}
+	limitStage := bson.D{{"$limit", 7}}
+
+	opts := options.Aggregate().SetMaxTime(5 * time.Second)
+	cursor, err = dynamicDatabase.Collection("nodeMessage").Aggregate(context.TODO(), mongo.Pipeline{matchStage, groupStage, sortStage, limitStage}, opts)
+	err = cursor.All(context.TODO(), &res)
+
+	for _, item := range res {
+		err = staticDatabase.Collection("nodeInfo").FindOne(context.TODO(), bson.M{"id": item["_id"]}).Decode(&info)
+		infoList[info.Name] = item["count"].(int32)
+	}
+	return infoList
+}
 
 func GetDataNetworkErrorALarms() []DataNetworkErrorAlarm {
 	var cursor *mongo.Cursor
 	var infoList []DataNetworkErrorAlarm
-	var info DataNetworkErrorAlarm
-	cursor, err = staticDatabase.Collection("dataNetworkErrorAlarm").Find(context.TODO(), bson.M{})
-	find(&info, &infoList, cursor)
+	//var info DataNetworkErrorAlarm
+	cursor, err = dynamicDatabase.Collection("dataNetworkErrorAlarm").Find(context.TODO(), bson.M{})
+	find(&infoList, cursor)
 	err = cursor.Close(context.TODO())
 	return infoList
 }

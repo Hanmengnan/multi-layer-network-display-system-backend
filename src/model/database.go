@@ -3,7 +3,6 @@ package model
 import (
 	"context"
 	"fmt"
-	"log"
 	"reflect"
 	"time"
 
@@ -44,16 +43,17 @@ func Disconnect() {
 	}
 }
 
-func find(info interface{}, infoList interface{}, cursor *mongo.Cursor) {
-	infoListValue := reflect.ValueOf(infoList).Elem()
-	resEleArray := make([]reflect.Value, 0)
+func find(infoListPtr interface{}, cursor *mongo.Cursor) {
+	infoListValue := reflect.ValueOf(infoListPtr).Elem()
+	infoListType := infoListValue.Type()
+	infoELemType := infoListType.Elem()
+	infoSlice := reflect.MakeSlice(reflect.SliceOf(infoELemType), 0, 0)
 
 	for cursor.Next(context.TODO()) {
-		err = cursor.Decode(info)
-		if err != nil {
-			log.Fatal(err)
-		}
-		resEleArray = append(resEleArray, reflect.ValueOf(info).Elem())
+		newInfo := reflect.New(infoELemType)
+		cursor.Decode(newInfo.Interface())
+		infoSlice = reflect.Append(infoSlice, newInfo.Elem())
 	}
-	infoListValue.Set(reflect.Append(infoListValue, resEleArray...))
+
+	infoListValue.Set(infoSlice)
 }

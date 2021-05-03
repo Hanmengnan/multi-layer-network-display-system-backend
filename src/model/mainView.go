@@ -13,19 +13,20 @@ type bandSetting struct {
 	End   string
 }
 
-type basicInfo struct {
-	_id     primitive.ObjectID `json:"id" bson:"_id"`
-	Version string             `bson:"version"`
-	Code    string             `bson:"code"`
-	State   struct {
-		Database int64
-		Network  int64
-		Cluster  int64
-	} `bson:"state"`
+type sysInfo struct {
+	_id        primitive.ObjectID `json:"id" bson:"_id"`
+	SystemName string             `json:"systemName"`
+	Version    string             `json:"version"`
+	Code       string             `json:"code"`
+	State      struct {
+		Database string `json:"database"`
+		Network  string `json:"network"`
+		Cluster  string `json:"cluster"`
+	} `json:"state"`
 	People struct {
 		Principal string
 		Duty      string
-	} `bson:"people"`
+	} `json:"people"`
 	Band struct {
 		Light     bandSetting
 		Data      bandSetting
@@ -39,38 +40,38 @@ type location struct {
 }
 
 type NodeInfo struct {
-	_id      primitive.ObjectID `json:"id" bson:"_id"`
-	Id       string
-	Name     string
-	City     string
-	state    string
-	Location location
-	Type     string
-	Topology string `json:"topology"`
+	_id      primitive.ObjectID `json:"_id" bson:"_id"`
+	Id       string             `json:"id"`
+	Name     string             `json:"name"`
+	City     string             `json:"city"`
+	State    string             `json:"state"`
+	Location location           `json:"location"`
+	Type     string             `json:"type"`
+	Topology string             `json:"topology"`
 }
 
 type LinkInfo struct {
 	_id         primitive.ObjectID `json:"id" bson:"_id"`
-	Id          string
-	Name        string
-	Node1Id     string
-	Node1Name   string
-	Node2Id     string
-	Node2Name   string
-	Contain     int64
-	Band        string
-	Builded     bool
-	UsedForTime bool
-	UsedForData bool
+	Id          string             `json:"id"`
+	Name        string             `json:"name"`
+	Node1Id     string             `json:"startId"`
+	Node1Name   string             `json:"start"`
+	Node2Id     string             `json:"endId"`
+	Node2Name   string             `json:"end"`
+	Contain     int                `json:"contain"`
+	Band        string             `json:"band"`
+	Builded     bool               `json:"builded"`
+	UsedForTime bool               `json:"usedForTime"`
+	UsedForData bool               `json:"usedForData"`
 }
 
 type situationHandleInfo struct {
 	_id         primitive.ObjectID `json:"_id" bson:"_id"`
 	Id          string             `json:"id"`
-	Type        int64              `json:"type"`
+	Type        int                `json:"type"`
 	Handler     string             `json:"handler"`
 	HandleTime  string             `json:"handleTime"`
-	HandleState int64              `json:"handleState"`
+	HandleState int                `json:"handleState"`
 	Origin      string             `json:"origin"`
 	Message     string             `json:"message"`
 }
@@ -82,8 +83,8 @@ type NetworkFlow struct {
 	DailyGrowth float64
 }
 
-func GetSystemBasicInfo() *basicInfo {
-	var systemBasicInfo basicInfo
+func GetSystemBasicInfo() *sysInfo {
+	var systemBasicInfo sysInfo
 	err = staticDatabase.Collection("basicInfo").FindOne(context.TODO(), bson.D{}).Decode(&systemBasicInfo)
 	if err != nil {
 		log.Fatal(err)
@@ -92,14 +93,13 @@ func GetSystemBasicInfo() *basicInfo {
 }
 
 func GetSituationHandleInfo() map[string][]situationHandleInfo {
-	var situationHandleInfoItem situationHandleInfo
 	var situationHandle = make(map[string][]situationHandleInfo)
 	var cursor *mongo.Cursor
 
-	closure := func(aimSituaion int64) []situationHandleInfo {
+	closure := func(aimSituaion int) []situationHandleInfo {
 		var situaionList []situationHandleInfo
-		cursor, err = staticDatabase.Collection("nodeMessage").Find(context.TODO(), bson.M{"type": aimSituaion})
-		find(&situationHandleInfoItem, &situaionList, cursor)
+		cursor, err = staticDatabase.Collection("nodeMessage").Find(context.TODO(), bson.M{"type": aimSituaion, "handleState": 0})
+		find(&situaionList, cursor)
 		err = cursor.Close(context.TODO())
 		return situaionList
 	}
@@ -116,9 +116,26 @@ func GetSituationHandleInfo() map[string][]situationHandleInfo {
 func GetNetworkFlow() []NetworkFlow {
 	var cursor *mongo.Cursor
 	var infoList []NetworkFlow
-	var info NetworkFlow
 	cursor, err = staticDatabase.Collection("flowChange").Find(context.TODO(), bson.M{})
-	find(&info, &infoList, cursor)
+	find(&infoList, cursor)
+	err = cursor.Close(context.TODO())
+	return infoList
+}
+
+func GetLinkInfo() []LinkInfo {
+	var cursor *mongo.Cursor
+	var infoList []LinkInfo
+	cursor, err = staticDatabase.Collection("linkInfo").Find(context.TODO(), bson.M{})
+	find(&infoList, cursor)
+	err = cursor.Close(context.TODO())
+	return infoList
+}
+
+func GetNodeInfo() []NodeInfo {
+	var cursor *mongo.Cursor
+	var infoList []NodeInfo
+	cursor, err = staticDatabase.Collection("nodeInfo").Find(context.TODO(), bson.M{})
+	find(&infoList, cursor)
 	err = cursor.Close(context.TODO())
 	return infoList
 }

@@ -19,19 +19,20 @@ var (
 func init() {
 	router = gin.Default()
 	//主视图路由
-	router.GET("/", httpRequest.HomeView)
+	//router.GET("/home", httpRequest.HomeView)
+	router.GET("/sysInfo", httpRequest.SysInfo)
 	router.GET("/situaionHandle", webSocket.SituationHandle)
 	router.GET("/flow", webSocket.FlowChange)
-	router.GET("/nodes", httpRequest.NodeInfo)
-	router.GET("/links", httpRequest.LinkInfo)
+	router.GET("/nodeList", httpRequest.NodeInfo)
+	router.GET("/linkList", httpRequest.LinkInfo)
 
 	//光网络路由
 	router.GET("/light", httpRequest.LightNetworkView)
 	router.POST("/link/bandSet", httpRequest.BandSet)
 	//数据网络路由
-	router.GET("/data", httpRequest.DataNetworkView)
-	router.GET("/data/link", httpRequest.DataNetworkLinkDetail)
-	router.GET("/data/node", httpRequest.DataNetworkNodeDetail)
+	router.GET("/DataNetInfo", httpRequest.DataNetworkView)
+	router.POST("/DataNetNodeInfo", httpRequest.DataNetworkNodeDetail)
+	router.POST("/DataNetLinkInfo", httpRequest.DataNetworkLinkDetail)
 
 	//时频网络路由
 	router.GET("/time", httpRequest.TimeNetworkView)

@@ -3,7 +3,7 @@ package webSocket
 import (
 	database "3network-backend/src/model"
 	"github.com/gin-gonic/gin"
-	"net/http"
+	"log"
 )
 
 type flowChangeResponse struct {
@@ -12,7 +12,15 @@ type flowChangeResponse struct {
 }
 
 func FlowChange(c *gin.Context) {
-	rawData := database.GetNetworkFlow()
-	res := flowChangeResponse{Response: 0, FlowChange: rawData}
-	c.JSON(http.StatusOK, res)
+	connection, err = upgrader.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	go func() {
+		res := flowChangeResponse{Response: 0, FlowChange: database.GetNetworkFlow()}
+		err = connection.WriteJSON(res)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 }

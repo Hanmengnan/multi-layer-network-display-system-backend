@@ -6,52 +6,59 @@ import (
 	"net/http"
 )
 
-type dataNetworkResponse struct {
-	Response     int64
-	BandUsed     int64
-	BandTotal    int64
-	LinkNum      int64
-	NodeNum      int64
-	TimestampNum int64
-	LocationNum  int64
+type info struct {
+	Title string      `json:"title"`
+	Num   interface{} `json:"num"`
 }
 
 type DataNetworkLinkDetailResponse struct {
-	Response int64 `json:"response"`
-	Detail   []database.LinkDetail
+	Response         int                        `json:"response"`
+	BasicInfo        database.LinkInfo          `json:"basicInfo"`
+	ParameterChange  []database.ParameterChange `json:"parameterChange"`
+	OriginStatistics map[string]int32           `json:"originStatistics"`
 }
 type DataNetworkNodeDetailResponse struct {
-	Response int64 `json:"response"`
-	Detail   []database.NodeDetail
+	Response         int `json:"response"`
+	NodeDetail       database.NodeDetail
+	LinkStatistics   []database.MessageLinkStatistics
+	DateStatistics   []database.MessageDateStatistics
+	OriginStatistics map[string]int32
 }
 
 func DataNetworkView(c *gin.Context) {
-	var res = dataNetworkResponse{}
 	basicInfo := database.GetDataNetworkBasicInfo()
-	res.BandUsed = basicInfo.BandUsed
-	res.BandTotal = basicInfo.BandTotal
-	res.LinkNum = basicInfo.LinkNum
-	res.NodeNum = basicInfo.NodeNum
-	res.TimestampNum = basicInfo.TimestampNum
-	res.LocationNum = basicInfo.LocationNum
-	res.Response = 0
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, basicInfo)
 }
 
 func DataNetworkLinkDetail(c *gin.Context) {
 	var res DataNetworkLinkDetailResponse
-	linkId := c.Query("linkId")
+	json := make(map[string]string)
+	err = c.BindJSON(&json)
+	if err != nil {
+		return
+	}
+	linkId := json["linkId"]
+
 	res.Response = 0
-	res.Detail = database.GetDataNetworkLinkDetail(linkId)
+	res.BasicInfo = database.GetLinkBasicInfo(linkId)
+	res.ParameterChange = database.GetLinkParameterChange(linkId)
+	res.OriginStatistics = database.GetLinkMessageOriginStatistics(linkId)
 
 	c.JSON(http.StatusOK, res)
 }
 
 func DataNetworkNodeDetail(c *gin.Context) {
 	var res DataNetworkNodeDetailResponse
-	nodeId := c.Query("nodeId")
+	json := make(map[string]string)
+	err = c.BindJSON(&json)
+	if err != nil {
+		return
+	}
+	nodeId := json["nodeId"]
 	res.Response = 0
-	res.Detail = database.GetDataNetworkNodeDetail(nodeId)
-
+	res.LinkStatistics = database.GetNodeMessageLinkStatistics(nodeId)
+	res.DateStatistics = database.GetNodeMessageDateStatistics(nodeId)
+	res.OriginStatistics = database.GetNodeMessageOriginStatistics(nodeId)
+	res.NodeDetail = database.GetNodeDetail(nodeId)
 	c.JSON(http.StatusOK, res)
 }

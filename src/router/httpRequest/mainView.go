@@ -12,24 +12,24 @@ var (
 )
 
 type nodesResponse struct {
-	Response     int64
-	NodeInfoList []database.NodeInfo
+	Response int64               `json:"response"`
+	NodeList []database.NodeInfo `json:"nodeList"`
 }
 
 type linksResponse struct {
-	Response     int64
-	LinkInfoList []database.LinkInfo
+	Response int64               `json:"response"`
+	LinkList []database.LinkInfo `json:"linkList"`
 }
 
-func HomeView(c *gin.Context) {
+func SysInfo(c *gin.Context) {
 	res := database.GetSystemBasicInfo()
 	c.JSON(http.StatusOK, *res)
 }
 
 func NodeInfo(c *gin.Context) {
-	c.JSON(http.StatusOK, nodesResponse{0, database.GetDataNetworkNodeInfo()})
+	c.JSON(http.StatusOK, nodesResponse{0, database.GetNodeInfo()})
 }
 
 func LinkInfo(c *gin.Context) {
-	c.JSON(http.StatusOK, linksResponse{0, database.GetDataNetworkLinkInfo()})
+	c.JSON(http.StatusOK, linksResponse{0, database.GetLinkInfo()})
 }
