@@ -8,7 +8,7 @@ import (
 
 type flowChangeResponse struct {
 	Response   int64
-	FlowChange []database.NetworkFlow
+	FlowChange map[string][]database.NetworkFlow
 }
 
 func FlowChange(c *gin.Context) {

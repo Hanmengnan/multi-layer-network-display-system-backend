@@ -30,6 +30,11 @@ func DataNetworkView(c *gin.Context) {
 	c.JSON(http.StatusOK, basicInfo)
 }
 
+func FlowChange(c *gin.Context) {
+	flowStatistic := database.GetNetworkFlow()
+	c.JSON(http.StatusOK, flowStatistic)
+}
+
 func DataNetworkLinkDetail(c *gin.Context) {
 	var res DataNetworkLinkDetailResponse
 	json := make(map[string]string)

@@ -5,6 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 )
 
@@ -78,9 +79,9 @@ type situationHandleInfo struct {
 
 type NetworkFlow struct {
 	_id         primitive.ObjectID `json:"id" bson:"_id"`
-	Time        string
-	FlowData    string
-	DailyGrowth float64
+	Time        interface{}        `json:"time"`
+	FlowData    float64            `json:"flowData"`
+	DailyGrowth float64            `json:"dailyGrowth"`
 }
 
 func GetSystemBasicInfo() *sysInfo {
@@ -113,15 +114,6 @@ func GetSituationHandleInfo() map[string][]situationHandleInfo {
 	return situationHandle
 }
 
-func GetNetworkFlow() []NetworkFlow {
-	var cursor *mongo.Cursor
-	var infoList []NetworkFlow
-	cursor, err = staticDatabase.Collection("flowChange").Find(context.TODO(), bson.M{})
-	find(&infoList, cursor)
-	err = cursor.Close(context.TODO())
-	return infoList
-}
-
 func GetLinkInfo() []LinkInfo {
 	var cursor *mongo.Cursor
 	var infoList []LinkInfo
@@ -138,4 +130,41 @@ func GetNodeInfo() []NodeInfo {
 	find(&infoList, cursor)
 	err = cursor.Close(context.TODO())
 	return infoList
+}
+
+func GetNetworkFlow() map[string][]NetworkFlow {
+	var cursor *mongo.Cursor
+	var res []bson.M
+	var flowStatistics = make(map[string][]NetworkFlow)
+	var dayFlow, weekFlow, monthFlow []NetworkFlow
+
+	var option = options.Find()
+	option.SetSort(bson.M{"time": -1})
+	option.SetLimit(30)
+	cursor, err = dynamicDatabase.Collection("flowChange").Find(context.TODO(), bson.M{}, option)
+	find(&dayFlow, cursor)
+	flowStatistics["day"] = dayFlow
+
+	option.SetLimit(7)
+	cursor, err = dynamicDatabase.Collection("flowChange").Find(context.TODO(), bson.M{}, option)
+	find(&weekFlow, cursor)
+	flowStatistics["week"] = weekFlow
+
+	groupStage := bson.D{
+		{"$group", bson.D{
+			{"_id", bson.M{"$dateToString": bson.M{"format": "%Y-%m", "date": "$time"}}},
+			{"count", bson.D{{"$sum", "$flowData"}}}},
+		},
+	}
+	sortStage := bson.D{{"$sort", bson.D{{"_id", -1}}}}
+	limitStage := bson.D{{"$limit", 12}}
+
+	cursor, err = dynamicDatabase.Collection("flowChange").Aggregate(context.TODO(), mongo.Pipeline{groupStage, sortStage, limitStage})
+	err = cursor.All(context.TODO(), &res)
+	for _, item := range res {
+		monthFlow = append(monthFlow, NetworkFlow{Time: item["_id"].(string), FlowData: item["count"].(float64), DailyGrowth: 0})
+	}
+	flowStatistics["month"] = monthFlow
+	err = cursor.Close(context.TODO())
+	return flowStatistics
 }

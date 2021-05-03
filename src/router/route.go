@@ -25,6 +25,7 @@ func init() {
 	router.GET("/flow", webSocket.FlowChange)
 	router.GET("/nodeList", httpRequest.NodeInfo)
 	router.GET("/linkList", httpRequest.LinkInfo)
+	router.GET("/DataNetFlow", httpRequest.FlowChange)
 
 	//光网络路由
 	router.GET("/light", httpRequest.LightNetworkView)
