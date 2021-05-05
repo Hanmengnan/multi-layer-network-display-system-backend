@@ -1,890 +1,774 @@
-## /
+## 通用接口
 
-```text
-主视图首屏
-```
+### 全部节点
 
-#### 接口状态
+#### URL
 
-> 需修改
+> /nodeList
 
-#### 接口URL
-
-> /
-
-#### 请求方式
+#### Method
 
 > GET
 
 #### Content-Type
 
-> form-data
+> json
 
-#### 预执行脚本
+#### Example-Response
 
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-#### 成功响应示例
-
-```javascript
+```json
 {
-	"response": 0,
-	"version": "v2.1",
-	"code": "code71233",
-	"state": {
-		"database": 0,
-		"network": 0,
-		"cluster": 0
-	},
-	"people": {
-		"principal": "牛猛",
-		"duty": "娓奇"
-	},
-	"situation": {
-		"handled": 100,
-		"handling": 210,
-		"unhandled": 100
-	}
+    "nodeList": [
+        {
+            "id": "SH01",
+            "name": "上海站",
+            "city": "上海",
+            "state": "正常",
+            "location": [
+                121.47824,
+                31.236423
+            ],
+            "type": "业务上下站",
+            "topology": "img/1.jpg"
+        },
+        {
+            "id": "CC01",
+            "name": "长春站",
+            "city": "长春",
+            "state": "正常",
+            "location": [
+                125.330606,
+                43.820913
+            ],
+            "type": "业务上下站",
+            "topology": "img/1.jpg"
+        },
+        {
+            "id": "SY01",
+            "name": "三亚站",
+            "city": "三亚",
+            "state": "繁忙",
+            "location": [
+                109.515685,
+                18.262581
+            ],
+            "type": "业务上下站",
+            "topology": "img/1.jpg"
+        },
+        {
+            "id": "SJZ01",
+            "name": "石家庄站",
+            "city": "石家庄",
+            "state": "故障",
+            "location": [
+                114.51463,
+                38.046721
+            ],
+            "type": "业务上下站",
+            "topology": "img/1.jpg"
+        },
+        {
+            "id": "BJ01",
+            "name": "北京站",
+            "city": "北京",
+            "state": "故障",
+            "location": [
+                116.403613,
+                39.913802
+            ],
+            "type": "业务上下站",
+            "topology": "img/1.jpg"
+        }
+    ],
+    "response": 0
 }
 ```
 
-| 参数名              | 示例值    | 参数类型 | 参数描述 |
-| ------------------- | --------- | -------- | -------- |
-| response            | 0         | Text     | 请求成功 |
-| version             | v2.1      | Text     |          |
-| code                | code71233 | Text     |          |
-| state               |           | Text     |          |
-| state.database      | 0         | Text     |          |
-| state.network       | 0         | Text     |          |
-| state.cluster       | 0         | Text     |          |
-| people              |           | Text     |          |
-| people.principal    | 牛猛      | Text     |          |
-| people.duty         | 娓奇      | Text     |          |
-| situation           |           | Text     |          |
-| situation.handled   | 100       | Text     |          |
-| situation.handling  | 210       | Text     |          |
-| situation.unhandled | 100       | Text     |          |
+### 全部链路
 
-#### 成功响应示例
+#### URL
 
-```javascript
-{
-    "response": 1,
-}
+> /linkList
 
-```
-
-| 参数名   | 示例值 | 参数类型 | 参数描述 |
-| -------- | ------ | -------- | -------- |
-| response | 1      | Text     | 请求失败 |
-
-## /flow
-
-```text
-暂无描述
-```
-
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> /flow
-
-#### 请求方式
+#### Method
 
 > GET
 
 #### Content-Type
 
-> form-data
+> json
 
-#### 预执行脚本
+#### Example-Response
 
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-#### 成功响应示例
-
-```javascript
+```json
 {
-	"response": 0,
-	"flowChange": [
-		{
-			"time": "1613724232.828657",
-			"flowData": "80",
-			"rate": 0.9
-		}
-	]
+    "linkList": [
+        {
+            "id": "BJ-SJZ-01",
+            "name": "北京-石家庄-01",
+            "node1Id": "BJ01",
+            "node1Name": "北京-01",
+            "node2Id": "SJZ01",
+            "node2Name": "石家庄-01",
+            "contain": 69,
+            "band": "",
+            "builded": true,
+            "usedForTime": true,
+            "usedForData": true
+        }
+    ],
+    "response": 0
 }
 ```
 
-| 参数名              | 示例值            | 参数类型 | 参数描述 |
-| ------------------- | ----------------- | -------- | -------- |
-| response            | 0                 | Text     | 请求成功 |
-| flowChange          |                   | Text     |          |
-| flowChange.time     | 1613724232.828657 | Text     |          |
-| flowChange.flowData | 80                | Text     |          |
-| flowChange.rate     | 0.9               | Text     |          |
+### WebSocket
 
-## /nodes
 
-```text
-获取全部节点
-```
 
-#### 接口状态
 
-> 需修改
 
-#### 接口URL
+## 主视图
 
-> /nodes
+### 系统信息
 
-#### 请求方式
+#### URL
+
+> /nodeList
+
+#### Method
 
 > GET
 
 #### Content-Type
 
-> form-data
+> json
 
-#### 预执行脚本
+#### Example-Response
 
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-#### 成功响应示例
-
-```javascript
+```json
 {
-	"response": 0,
-	"nodes": [
-		{
-			"id": "SH001",
-			"name": "上海站",
-			"city": "上海",
-			"state": "正常",
-			"location": {
-				"type": "Ponit",
-				"coordinates": [
-					121.4648,
-					31.2891
-				]
-			},
-			"type": "业务上下站",
-			"Precision": "最高时钟基准",
-			"error": "5",
-			"throughput": "900",
-			"forwardingRate": "0.8",
-			"Topology": "img/3.jpg"
-		}
-	]
+    "systemName": "网络运行管理仿真系统",
+    "version": "v2.8",
+    "code": "code71233",
+    "state": {
+        "database": "health",
+        "network": "health",
+        "cluster": "health"
+    },
+    "people": {
+        "Principal": {
+            "name": "张三",
+            "photo": "./"
+        },
+        "Duty": {
+            "name": "李四",
+            "photo": "./"
+        }
+    },
+    "Band": {
+        "Light": {
+            "Begin": "MD01",
+            "End": "MD02"
+        },
+        "Data": {
+            "Begin": "MD03",
+            "End": "MD05"
+        },
+        "Emergency": {
+            "Begin": "MD06",
+            "End": "MD10"
+        }
+    },
+    "startTime": "2020-06-17T00:00:00Z"
 }
 ```
 
-| 参数名                     | 示例值       | 参数类型 | 参数描述 |
-| -------------------------- | ------------ | -------- | -------- |
-| response                   | 0            | Text     | 请求成功 |
-| nodes                      |              | Text     |          |
-| nodes.id                   | SH001        | Text     |          |
-| nodes.name                 | 上海站       | Text     |          |
-| nodes.city                 | 上海         | Text     |          |
-| nodes.state                | 正常         | Text     |          |
-| nodes.location             |              | Text     |          |
-| nodes.location.type        | Ponit        | Text     |          |
-| nodes.location.coordinates | 121.4648     | Text     |          |
-| nodes.type                 | 业务上下站   | Text     |          |
-| nodes.Precision            | 最高时钟基准 | Text     |          |
-| nodes.error                | 5            | Text     |          |
-| nodes.throughput           | 900          | Text     |          |
-| nodes.forwardingRate       | 0.8          | Text     |          |
-| nodes.Topology             | img/3.jpg    | Text     |          |
+### 
 
-## /links
+### 情况处理
 
-```text
-光网络查询链路
-```
+#### URL
 
-#### 接口状态
+> /eventList
 
-> 需修改
-
-#### 接口URL
-
-> /data/links
-
-#### 请求方式
+#### Method
 
 > GET
 
 #### Content-Type
 
-> form-data
+> json
 
-#### 预执行脚本
+#### Example-Response
 
-```javascript
-暂无预执行脚本
+```json
+
 ```
 
-#### 后执行脚本
+### 
 
-```javascript
-暂无后执行脚本
-```
+### 节点列表
 
-#### 成功响应示例
+> 同通用接口中的 “ 全部节点 ”
 
-```javascript
-{
-	"response": 0,
-	"links": [
-		{
-			"id": "",
-			"name": "",
-			"node1ID": "",
-			"node1Name": "",
-			"node2ID": "",
-			"node2Name": "",
-			"band": "",
-			"state": "",
-			"error": "",
-			"loss": ""
-		}
-	]
-}
-```
+#### URL
 
-| 参数名          | 示例值 | 参数类型 | 参数描述 |
-| --------------- | ------ | -------- | -------- |
-| response        | 0      | Text     | 请求成功 |
-| links           |        | Text     |          |
-| links.id        |        | Text     |          |
-| links.name      |        | Text     |          |
-| links.node1ID   |        | Text     |          |
-| links.node1Name |        | Text     |          |
-| links.node2ID   |        | Text     |          |
-| links.node2Name |        | Text     |          |
-| links.band      |        | Text     |          |
-| links.state     |        | Text     |          |
-| links.error     |        | Text     |          |
-| links.loss      |        | Text     |          |
+> /nodeList
 
-#### 成功响应示例
-
-```javascript
-{
-    "response": 1
-}
-```
-
-| 参数名   | 示例值 | 参数类型 | 参数描述 |
-| -------- | ------ | -------- | -------- |
-| response | 1      | Text     | 请求失败 |
-
-## /situationHandle
-
-```text
-主视图情况处理
-```
-
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> /situationHandle
-
-#### 请求方式
+#### Method
 
 > GET
 
 #### Content-Type
 
-> form-data
+> json
 
-#### 预执行脚本
-
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
+#### Example-Response
 
 ```javascript
-暂无后执行脚本
+
 ```
 
-#### 成功响应示例
+### 
 
-```javascript
-{
-	"handled": [
-		{
-			"id": "312",
-			"type": "",
-			"handler": "",
-			"handleTime": "",
-			"handleState": "",
-			"origin": "",
-			"message": ""
-		}
-	],
-	"handling": [
-		{
-			"id": "312",
-			"type": "",
-			"handler": "",
-			"handleTime": "",
-			"handleState": "",
-			"origin": "",
-			"message": ""
-		}
-	],
-	"unhandled": [
-		{
-			"id": "312",
-			"type": "",
-			"handler": "",
-			"handleTime": "",
-			"handleState": "",
-			"origin": "",
-			"message": ""
-		}
-	]
-}
-```
+### 基本信息
 
-| 参数名                | 示例值 | 参数类型 | 参数描述 |
-| --------------------- | ------ | -------- | -------- |
-| handled               |        | Text     |          |
-| handled.id            | 312    | Text     |          |
-| handled.type          |        | Text     |          |
-| handled.handler       |        | Text     |          |
-| handled.handleTime    |        | Text     |          |
-| handled.handleState   |        | Text     |          |
-| handled.origin        |        | Text     |          |
-| handled.message       |        | Text     |          |
-| handling              |        | Text     |          |
-| handling.id           | 312    | Text     |          |
-| handling.type         |        | Text     |          |
-| handling.handler      |        | Text     |          |
-| handling.handleTime   |        | Text     |          |
-| handling.handleState  |        | Text     |          |
-| handling.origin       |        | Text     |          |
-| handling.message      |        | Text     |          |
-| unhandled             |        | Text     |          |
-| unhandled.id          | 312    | Text     |          |
-| unhandled.type        |        | Text     |          |
-| unhandled.handler     |        | Text     |          |
-| unhandled.handleTime  |        | Text     |          |
-| unhandled.handleState |        | Text     |          |
-| unhandled.origin      |        | Text     |          |
-| unhandled.message     |        | Text     |          |
+#### URL
 
-#### 成功响应示例
+> /netInfo
 
-```javascript
-{
-    "response": 1
-}
-```
-
-| 参数名   | 示例值 | 参数类型 | 参数描述 |
-| -------- | ------ | -------- | -------- |
-| response | 1      | Text     | 请求失败 |
-
-## /light
-
-```text
-光网络首屏
-```
-
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> /light
-
-#### 请求方式
+#### Method
 
 > GET
 
 #### Content-Type
 
-> form-data
+> json
 
-#### 预执行脚本
+#### Example-Response
 
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-#### 成功响应示例
-
-```javascript
+```json
 {
-	"response": 0,
-	"siteNum": {
-		"business": 100,
-		"electric": 50,
-		"light": 40,
-		"error": 1
-	},
-	"bandSetting": {
-		"light": [
-			"MD01",
-			"MD02"
-		],
-		"data": [
-			"MD03",
-			"MD05"
-		],
-		"emergency": [
-			"MD09",
-			"MD10"
-		]
-	}
+    "recordTime": "2021-05-04T09:00:02Z",
+    "connectivity": 98.2,
+    "throughput": 52001,
+    "utilization": 67.2,
+    "responseTime": 80.2
 }
 ```
 
-| 参数名                | 示例值 | 参数类型 | 参数描述 |
-| --------------------- | ------ | -------- | -------- |
-| response              | 0      | Text     | 请求成功 |
-| siteNum               |        | Text     |          |
-| siteNum.business      | 100    | Text     |          |
-| siteNum.electric      | 50     | Text     |          |
-| siteNum.light         | 40     | Text     |          |
-| siteNum.error         | 1      | Text     |          |
-| bandSetting           |        | Text     |          |
-| bandSetting.light     | MD01   | Text     |          |
-| bandSetting.data      | MD03   | Text     |          |
-| bandSetting.emergency | MD09   | Text     |          |
+### 
 
-#### 成功响应示例
+### 流量信息
 
-```javascript
-{
-    "response": 1,
-}
-```
+#### URL
 
-| 参数名   | 示例值 | 参数类型 | 参数描述 |
-| -------- | ------ | -------- | -------- |
-| response | 1      | Text     | 请求失败 |
+> /flowInfo
 
-## /light/bandNum
-
-```text
-暂无描述
-```
-
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> light/bandNum
-
-#### 请求方式
+#### Method
 
 > GET
 
 #### Content-Type
 
-> form-data
+> json
 
-#### 预执行脚本
-
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
+#### Example-Response
 
 ```javascript
-暂无后执行脚本
+{
+    "day": [
+        {
+            "time": "2021-05-04T01:41:33+08:00",
+            "flowData": 80,
+            "dailyGrowth": 0.12
+        },
+        {
+            "time": "2021-05-03T01:43:00+08:00",
+            "flowData": 90,
+            "dailyGrowth": 0.2
+        },
+        {
+            "time": "2021-05-02T01:44:26+08:00",
+            "flowData": 90,
+            "dailyGrowth": 0.1
+        },
+        {
+            "time": "2021-05-01T01:45:53+08:00",
+            "flowData": 110,
+            "dailyGrowth": 0.23
+        },
+        {
+            "time": "2021-04-30T01:47:19+08:00",
+            "flowData": 100,
+            "dailyGrowth": -0.231
+        },
+        {
+            "time": "2021-04-29T01:48:45+08:00",
+            "flowData": 70,
+            "dailyGrowth": -0.2
+        },
+        {
+            "time": "2021-04-28T01:47:19+08:00",
+            "flowData": 120,
+            "dailyGrowth": -0.231
+        },
+        {
+            "time": "2021-04-27T01:47:19+08:00",
+            "flowData": 110,
+            "dailyGrowth": -0.231
+        },
+        {
+            "time": "2021-04-26T01:47:19+08:00",
+            "flowData": 100,
+            "dailyGrowth": -0.231
+        },
+        {
+            "time": "2021-04-25T01:47:19+08:00",
+            "flowData": 110,
+            "dailyGrowth": -0.231
+        },
+        {
+            "time": "2021-04-24T01:47:19+08:00",
+            "flowData": 102,
+            "dailyGrowth": -0.231
+        },
+        {
+            "time": "2021-04-23T01:47:19+08:00",
+            "flowData": 120,
+            "dailyGrowth": -0.231
+        }
+    ],
+    "month": [
+        {
+            "time": "2021-05",
+            "flowData": 260,
+            "dailyGrowth": 0
+        },
+        {
+            "time": "2021-04",
+            "flowData": 942,
+            "dailyGrowth": 0
+        }
+    ],
+    "week": [
+        {
+            "time": "2021-05-04T01:41:33+08:00",
+            "flowData": 80,
+            "dailyGrowth": 0.12
+        },
+        {
+            "time": "2021-05-03T01:43:00+08:00",
+            "flowData": 90,
+            "dailyGrowth": 0.2
+        },
+        {
+            "time": "2021-05-02T01:44:26+08:00",
+            "flowData": 90,
+            "dailyGrowth": 0.1
+        },
+        {
+            "time": "2021-05-01T01:45:53+08:00",
+            "flowData": 110,
+            "dailyGrowth": 0.23
+        },
+        {
+            "time": "2021-04-30T01:47:19+08:00",
+            "flowData": 100,
+            "dailyGrowth": -0.231
+        },
+        {
+            "time": "2021-04-29T01:48:45+08:00",
+            "flowData": 70,
+            "dailyGrowth": -0.2
+        },
+        {
+            "time": "2021-04-28T01:47:19+08:00",
+            "flowData": 120,
+            "dailyGrowth": -0.231
+        }
+    ]
+}
 ```
 
-## /bandSet
 
-```text
-光网络波段设置
+
+## 光网络视图
+
+### 节点信息概览
+
+#### URL
+
+> /lightNetInfo
+
+#### Method
+
+> GET
+
+#### Content-Type
+
+> json
+
+#### Example-Response
+
+```json
+
 ```
 
-#### 接口状态
 
-> 需修改
 
-#### 接口URL
+### 波段报文数量查询
 
-> /bandSet
+#### URL
 
-#### 请求方式
+> /lightNetBandMsg
+
+#### Method
+
+> GET
+
+#### Content-Type
+
+> json
+
+#### Example-Response
+
+```json
+
+```
+
+
+
+### 运行配置设置
+
+#### URL
+
+> /lightNetBandSet
+
+#### Method
+
+> GET
+
+#### Content-Type
+
+> json
+
+#### Example-Response
+
+```json
+
+```
+
+
+
+### 链路状态查询
+
+#### URL
+
+> /lightNetLinkInfo
+
+#### Method
+
+> GET
+
+#### Content-Type
+
+> json
+
+#### Example-Response
+
+```json
+
+```
+
+
+
+### 节点设备状态查询
+
+#### URL
+
+> /lightNetNodeInfo
+
+#### Method
+
+> GET
+
+#### Content-Type
+
+> json
+
+#### Example-Response
+
+```json
+
+```
+
+
+
+### 波段利用率查询
+
+#### URL
+
+> /lightNetBandUse
+
+#### Method
+
+> GET
+
+#### Content-Type
+
+> json
+
+#### Example-Response
+
+```json
+
+```
+
+
+
+## 时频网络视图
+
+### 网络概览
+
+#### URL
+
+> /timeNetInfo
+
+#### Method
+
+> GET
+
+#### Content-Type
+
+> json
+
+#### Example-Response
+
+```json
+
+```
+
+
+
+### 各基站精度查询
+
+#### URL
+
+> /timeNetNodeInfo
+
+#### Method
+
+> GET
+
+#### Content-Type
+
+> json
+
+#### Example-Response
+
+```json
+
+```
+
+
+
+### 拓扑图
+
+#### URL
+
+> /timeNetLinkInfo
+
+#### Method
+
+> GET
+
+#### Content-Type
+
+> json
+
+#### Example-Response
+
+```json
+
+```
+
+
+
+## 数据网络视图
+
+### 数据网络总览
+
+#### URL
+
+> /dataNetInfo
+
+#### Method
+
+> GET
+
+#### Content-Type
+
+> json
+
+#### Example-Response
+
+```json
+{
+    "bandUsed": 42,
+    "bandTotal": 51,
+    "linkNum": 4575,
+    "nodeNum": 4,
+    "timestampNum": 1915,
+    "locationNum": 8114,
+    "daliFlow": 100.2,
+    "monthlyFlow": 5029.5
+}
+```
+
+
+
+### 流量变化
+
+> 同主视图中的 “流量信息” 
+
+
+
+
+
+### 节点详情查询
+
+#### URL
+
+> /dataNetNodeInfo
+
+#### Method
 
 > POST
 
 #### Content-Type
 
-> form-data
+> json
 
-#### 请求Body参数
+#### Example-Response
 
-| 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
-| ------ | ------ | -------- | -------- | -------- |
-| type   | light  | Text     | 是       |          |
-| begin  | MD01   | Text     | 是       |          |
-| end    | MD05   | Text     | 是       |          |
-
-#### 预执行脚本
-
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-#### 成功响应示例
-
-```javascript
+```json
 {
-	"response": 0
+    "response": 0,
+    "NodeDetail": {
+        "name": "上海站",
+        "precision": "超高时钟基准",
+        "error": 5,
+        "throughput": 1000,
+        "forwardingRate": 0.9
+    },
+    "LinkStatistics": [
+        {
+            "SiteId": "SH01",
+            "LinkName": "上海站-北京站",
+            "NormalMessageNum": 0,
+            "BusyMessageNum": 0,
+            "ErrorMessageNum": 1
+        },
+        {
+            "SiteId": "SH01",
+            "LinkName": "上海站-长春站",
+            "NormalMessageNum": 1,
+            "BusyMessageNum": 1,
+            "ErrorMessageNum": 0
+        }
+    ],
+    "DateStatistics": [
+        {
+            "ReceiveDate": "1970-01-13",
+            "SiteId": "SH01",
+            "NormalMessageNum": 0,
+            "BusyMessageNum": 0,
+            "ErrorMessageNum": 1
+        },
+        {
+            "ReceiveDate": "1970-01-19",
+            "SiteId": "SH01",
+            "NormalMessageNum": 1,
+            "BusyMessageNum": 1,
+            "ErrorMessageNum": 0
+        }
+    ],
+    "OriginStatistics": {
+        "北京站": 1,
+        "长春站": 2
+    }
 }
 ```
 
-| 参数名   | 示例值 | 参数类型 | 参数描述 |
-| -------- | ------ | -------- | -------- |
-| response | 0      | Text     | 请求成功 |
 
-#### 成功响应示例
 
-```javascript
-{
-    "response": 1
-}
-```
+### 链路详情查询
 
-| 参数名   | 示例值 | 参数类型 | 参数描述 |
-| -------- | ------ | -------- | -------- |
-| response | 1      | Text     | 请求失败 |
+#### URL
 
-## /time
+> /dataNetLinkInfo
 
-```text
-时频网络首屏
-```
+#### Method
 
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> /time
-
-#### 请求方式
-
-> GET
+> POST
 
 #### Content-Type
 
-> form-data
+> json
 
-#### 预执行脚本
+#### Example-Response
 
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-#### 成功响应示例
-
-```javascript
+```json
 {
-	"response": 0,
-	"siteNum": [
-		100,
-		120,
-		150,
-		200
-	]
+    "response": 0,
+    "basicInfo": {
+        "id": "BJ-SJZ-01",
+        "name": "北京-石家庄-01",
+        "node1Id": "BJ01",
+        "node1Name": "北京-01",
+        "node2Id": "SJZ01",
+        "node2Name": "石家庄-01",
+        "contain": 69,
+        "band": "",
+        "builded": true,
+        "usedForTime": true,
+        "usedForData": true
+    },
+    "parameterChange": [
+        {
+            "id": "BJ-SJZ-01",
+            "time": "1970-01-22T16:15:24Z",
+            "precisionError": 12,
+            "loss": 0.01,
+            "used": 0.59
+        },
+        {
+            "id": "BJ-SJZ-01",
+            "time": "1970-01-21T16:15:24Z",
+            "precisionError": 12,
+            "loss": 0.01,
+            "used": 0.59
+        },
+        {
+            "id": "BJ-SJZ-01",
+            "time": "1970-01-20T16:15:24Z",
+            "precisionError": 12,
+            "loss": 0.01,
+            "used": 0.59
+        },
+        {
+            "id": "BJ-SJZ-01",
+            "time": "1970-01-19T16:15:24Z",
+            "precisionError": 12,
+            "loss": 0.01,
+            "used": 0.59
+        }
+    ],
+    "originStatistics": {
+        "三亚站": 2,
+        "长春站": 1
+    }
 }
 ```
 
-| 参数名   | 示例值 | 参数类型 | 参数描述 |
-| -------- | ------ | -------- | -------- |
-| response | 0      | Text     | 请求成功 |
-| siteNum  | 100    | Text     |          |
-
-#### 成功响应示例
-
-```javascript
-{
-    "response": 1,
-}
-```
-
-| 参数名   | 示例值 | 参数类型 | 参数描述 |
-| -------- | ------ | -------- | -------- |
-| response | 1      | Text     | 请求失败 |
-
-## /data
-
-```text
-数据网络首屏
-```
-
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> /data
-
-#### 请求方式
-
-> GET
-
-#### Content-Type
-
-> form-data
-
-#### 预执行脚本
-
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-#### 成功响应示例
-
-```javascript
-{
-	"response": 0,
-	"bandUsed": "",
-	"bandTotal": "",
-	"linkNum": 9121,
-	"nodeNum": 1000,
-	"Timestamp": 1753,
-	"Location": 13541
-}
-```
-
-| 参数名    | 示例值 | 参数类型 | 参数描述 |
-| --------- | ------ | -------- | -------- |
-| response  | 0      | Text     | 请求成功 |
-| bandUsed  |        | Text     |          |
-| bandTotal |        | Text     |          |
-| linkNum   | 9121   | Text     |          |
-| nodeNum   | 1000   | Text     |          |
-| Timestamp | 1753   | Text     |          |
-| Location  | 13541  | Text     |          |
-
-#### 成功响应示例
-
-```javascript
-{
-    "response": 1
-}
-```
-
-| 参数名   | 示例值 | 参数类型 | 参数描述 |
-| -------- | ------ | -------- | -------- |
-| response | 1      | Text     | 请求失败 |
-
-## /data/node
-
-```text
-暂无描述
-```
-
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> /data/node?nodeId=
-
-#### 请求方式
-
-> GET
-
-#### Content-Type
-
-> form-data
-
-#### 请求Query参数
-
-| 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
-| ------ | ------ | -------- | -------- | -------- |
-| nodeId |        | Text     | 是       |          |
-
-#### 预执行脚本
-
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-## /data/link
-
-```text
-暂无描述
-```
-
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> data/link?linkId=
-
-#### 请求方式
-
-> GET
-
-#### Content-Type
-
-> form-data
-
-#### 请求Query参数
-
-| 参数名 | 示例值 | 参数类型 | 是否必填 | 参数描述 |
-| ------ | ------ | -------- | -------- | -------- |
-| linkId |        | Text     | 是       |          |
-
-#### 预执行脚本
-
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-## /data/errorAlarm
-
-```text
-暂无描述
-```
-
-#### 接口状态
-
-> 需修改
-
-#### 接口URL
-
-> data/errorAlarm
-
-#### 请求方式
-
-> GET
-
-#### Content-Type
-
-> form-data
-
-#### 预执行脚本
-
-```javascript
-暂无预执行脚本
-```
-
-#### 后执行脚本
-
-```javascript
-暂无后执行脚本
-```
-
-#### 成功响应示例
-
-```javascript
-{
-	"response": 0,
-	"errorAlarm": [
-		{
-			"id": "",
-			"rTime": "1613724232.828657",
-			"type": "",
-			"level": "",
-			"msg": "",
-			"state": "",
-			"beginNode": "",
-			"endNode": ""
-		}
-	]
-}
-```
-
-| 参数名               | 示例值            | 参数类型 | 参数描述 |
-| -------------------- | ----------------- | -------- | -------- |
-| response             | 0                 | Text     | 请求成功 |
-| errorAlarm           |                   | Text     |          |
-| errorAlarm.id        |                   | Text     |          |
-| errorAlarm.rTime     | 1613724232.828657 | Text     |          |
-| errorAlarm.type      |                   | Text     |          |
-| errorAlarm.level     |                   | Text     |          |
-| errorAlarm.msg       |                   | Text     |          |
-| errorAlarm.state     |                   | Text     |          |
-| errorAlarm.beginNode |                   | Text     |          |
-| errorAlarm.endNode   |                   | Text     |          |
