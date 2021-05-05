@@ -89,7 +89,7 @@ func GetLinkParameterChange(linkId string) []ParameterChange {
 	findOptions.SetSort(bson.D{{"time", -1}})
 	findOptions.SetLimit(30 * 24)
 
-	cursor, err = dynamicDatabase.Collection("linkDetail").Find(context.TODO(), bson.M{"id": linkId}, findOptions)
+	cursor, err = dynamicDatabase.Collection("linkParameter").Find(context.TODO(), bson.M{"id": linkId}, findOptions)
 	find(&infoList, cursor)
 	err = cursor.Close(context.TODO())
 	return infoList

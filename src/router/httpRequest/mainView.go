@@ -11,25 +11,19 @@ var (
 	err error
 )
 
-type nodesResponse struct {
-	Response int64               `json:"response"`
-	NodeList []database.NodeInfo `json:"nodeList"`
-}
-
-type linksResponse struct {
-	Response int64               `json:"response"`
-	LinkList []database.LinkInfo `json:"linkList"`
-}
-
 func SysInfo(c *gin.Context) {
 	res := database.GetSystemBasicInfo()
 	c.JSON(http.StatusOK, *res)
 }
 
-func NodeInfo(c *gin.Context) {
-	c.JSON(http.StatusOK, nodesResponse{0, database.GetNodeInfo()})
+func NodeList(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"response": 0, "nodeList": database.GetNodeList()})
 }
 
-func LinkInfo(c *gin.Context) {
-	c.JSON(http.StatusOK, linksResponse{0, database.GetLinkInfo()})
+func LinkList(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"response": 0, "linkList": database.GetLinkList()})
+}
+
+func NetInfo(c *gin.Context) {
+	c.JSON(http.StatusOK, *database.GetNetParameter())
 }

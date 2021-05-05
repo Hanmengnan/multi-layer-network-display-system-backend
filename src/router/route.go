@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 
 	"3network-backend/src/router/httpRequest"
@@ -17,23 +18,27 @@ var (
 )
 
 func init() {
+	var wg sync.WaitGroup
+	wg.Add(2)
+
 	router = gin.Default()
+
+	router.GET("/ws", webSocket.WSHandler)
 	//主视图路由
-	//router.GET("/home", httpRequest.HomeView)
+
 	router.GET("/sysInfo", httpRequest.SysInfo)
-	router.GET("/situaionHandle", webSocket.SituationHandle)
-	router.GET("/flow", webSocket.FlowChange)
-	router.GET("/nodeList", httpRequest.NodeInfo)
-	router.GET("/linkList", httpRequest.LinkInfo)
-	router.GET("/DataNetFlow", httpRequest.FlowChange)
+	router.GET("/nodeList", httpRequest.NodeList)
+	router.GET("/linkList", httpRequest.LinkList)
+	router.GET("/flowInfo", httpRequest.FlowChange)
+	router.GET("/netInfo", httpRequest.NetInfo)
 
 	//光网络路由
 	router.GET("/light", httpRequest.LightNetworkView)
 	router.POST("/link/bandSet", httpRequest.BandSet)
 	//数据网络路由
-	router.GET("/DataNetInfo", httpRequest.DataNetworkView)
-	router.POST("/DataNetNodeInfo", httpRequest.DataNetworkNodeDetail)
-	router.POST("/DataNetLinkInfo", httpRequest.DataNetworkLinkDetail)
+	router.GET("/dataNetInfo", httpRequest.DataNetworkView)
+	router.POST("/dataNetNodeInfo", httpRequest.DataNetworkNodeDetail)
+	router.POST("/dataNetLinkInfo", httpRequest.DataNetworkLinkDetail)
 
 	//时频网络路由
 	router.GET("/time", httpRequest.TimeNetworkView)
@@ -46,8 +51,13 @@ func init() {
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	err = server.ListenAndServe()
-	if err != nil {
-		log.Fatal(err)
-	}
+	go func() {
+		err = server.ListenAndServe()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+	go webSocket.Test()
+
+	wg.Wait()
 }

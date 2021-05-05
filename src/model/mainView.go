@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
+	"time"
 )
 
 type bandSetting struct {
@@ -25,19 +26,30 @@ type sysInfo struct {
 		Cluster  string `json:"cluster"`
 	} `json:"state"`
 	People struct {
-		Principal string
-		Duty      string
+		Principal struct {
+			Name  string `json:"name"`
+			Photo string `json:"photo"`
+		}
+		Duty struct {
+			Name  string `json:"name"`
+			Photo string `json:"photo"`
+		}
 	} `json:"people"`
 	Band struct {
 		Light     bandSetting
 		Data      bandSetting
 		Emergency bandSetting
 	} `bson:"band"`
+	StartTime time.Time `json:"startTime"`
 }
 
-type location struct {
-	Type        string
-	Coordinates []float64
+type NetParameter struct {
+	_id          primitive.ObjectID `bson:"__id" json:"_id,omitempty"`
+	RecordTime   time.Time          `json:"recordTime"`
+	Connectivity float64            `json:"connectivity"`
+	Throughput   float64            `json:"throughput"`
+	Utilization  float64            `json:"utilization"`
+	ResponseTime float64            `json:"responseTime"`
 }
 
 type NodeInfo struct {
@@ -46,7 +58,7 @@ type NodeInfo struct {
 	Name     string             `json:"name"`
 	City     string             `json:"city"`
 	State    string             `json:"state"`
-	Location location           `json:"location"`
+	Location []float64          `json:"location"`
 	Type     string             `json:"type"`
 	Topology string             `json:"topology"`
 }
@@ -55,10 +67,10 @@ type LinkInfo struct {
 	_id         primitive.ObjectID `json:"id" bson:"_id"`
 	Id          string             `json:"id"`
 	Name        string             `json:"name"`
-	Node1Id     string             `json:"startId"`
-	Node1Name   string             `json:"start"`
-	Node2Id     string             `json:"endId"`
-	Node2Name   string             `json:"end"`
+	Node1Id     string             `json:"node1Id"`
+	Node1Name   string             `json:"node1Name"`
+	Node2Id     string             `json:"node2Id"`
+	Node2Name   string             `json:"node2Name"`
 	Contain     int                `json:"contain"`
 	Band        string             `json:"band"`
 	Builded     bool               `json:"builded"`
@@ -93,6 +105,17 @@ func GetSystemBasicInfo() *sysInfo {
 	return &systemBasicInfo
 }
 
+func GetNetParameter() *NetParameter {
+	var info NetParameter
+	var option = options.FindOne()
+	option.SetSort(bson.M{"recordTime": -1})
+	err = dynamicDatabase.Collection("netParameter").FindOne(context.TODO(), bson.M{}).Decode(&info)
+	if err != nil {
+		return nil
+	}
+	return &info
+}
+
 func GetSituationHandleInfo() map[string][]situationHandleInfo {
 	var situationHandle = make(map[string][]situationHandleInfo)
 	var cursor *mongo.Cursor
@@ -114,7 +137,7 @@ func GetSituationHandleInfo() map[string][]situationHandleInfo {
 	return situationHandle
 }
 
-func GetLinkInfo() []LinkInfo {
+func GetLinkList() []LinkInfo {
 	var cursor *mongo.Cursor
 	var infoList []LinkInfo
 	cursor, err = staticDatabase.Collection("linkInfo").Find(context.TODO(), bson.M{})
@@ -123,7 +146,7 @@ func GetLinkInfo() []LinkInfo {
 	return infoList
 }
 
-func GetNodeInfo() []NodeInfo {
+func GetNodeList() []NodeInfo {
 	var cursor *mongo.Cursor
 	var infoList []NodeInfo
 	cursor, err = staticDatabase.Collection("nodeInfo").Find(context.TODO(), bson.M{})
