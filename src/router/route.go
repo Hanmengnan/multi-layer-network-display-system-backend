@@ -23,25 +23,34 @@ func init() {
 
 	router = gin.Default()
 
+	// WebSocket
 	router.GET("/ws", webSocket.WSHandler)
 	//主视图路由
-
 	router.GET("/sysInfo", httpRequest.SysInfo)
 	router.GET("/nodeList", httpRequest.NodeList)
 	router.GET("/linkList", httpRequest.LinkList)
 	router.GET("/flowInfo", httpRequest.FlowChange)
 	router.GET("/netInfo", httpRequest.NetInfo)
 
+	router.GET("/nodeStatistics", httpRequest.NodeStatistics)
+
 	//光网络路由
-	router.GET("/light", httpRequest.LightNetworkView)
-	router.POST("/link/bandSet", httpRequest.BandSet)
+	router.GET("/lightNetInfo", httpRequest.LightNetworkView)
+	router.GET("/lightNetBandMsg", httpRequest.LightNetworkView)
+	router.GET("/lightNetBandSet", httpRequest.LightNetworkView)
+	router.GET("/lightNetBandUse", httpRequest.LightNetworkView)
+	router.GET("/lightNetNodeInfo", httpRequest.LightNetworkView)
+	router.GET("/lightNetLinkInfo", httpRequest.LightNetworkView)
+
 	//数据网络路由
 	router.GET("/dataNetInfo", httpRequest.DataNetworkView)
 	router.POST("/dataNetNodeInfo", httpRequest.DataNetworkNodeDetail)
 	router.POST("/dataNetLinkInfo", httpRequest.DataNetworkLinkDetail)
 
 	//时频网络路由
-	router.GET("/time", httpRequest.TimeNetworkView)
+	router.GET("/timeNetInfo", httpRequest.TimeNetworkView)
+	router.GET("/timeNetNodeInfo", httpRequest.TimeNetworkView)
+	router.GET("/timeNetLinkInfo", httpRequest.TimeNetworkView)
 
 	server = &http.Server{
 		Addr:           ":8070",

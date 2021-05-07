@@ -191,3 +191,58 @@ func GetNetworkFlow() map[string][]NetworkFlow {
 	err = cursor.Close(context.TODO())
 	return flowStatistics
 }
+
+func GetNodeTypeStatistics() map[string]int32 {
+	var cursor *mongo.Cursor
+	var res []bson.M
+	var infoList = make(map[string]int32)
+	groupStage := bson.D{
+		{
+			"$group", bson.D{
+				{"_id", "$type"},
+				{"count", bson.M{"$sum": 1}}},
+		},
+	}
+	opt := options.Aggregate().SetMaxTime(5 * time.Second)
+	cursor, err = staticDatabase.Collection("nodeInfo").Aggregate(context.TODO(), mongo.Pipeline{groupStage}, opt)
+	if err != nil {
+		return nil
+	}
+
+	err = cursor.All(context.TODO(), &res)
+	if err != nil {
+		return nil
+	}
+
+	for _, item := range res {
+		infoList[item["_id"].(string)] = item["count"].(int32)
+	}
+	return infoList
+}
+
+func GetNodeAreaStatistics() map[string]int32 {
+	var cursor *mongo.Cursor
+	var res []bson.M
+	var infoList = make(map[string]int32)
+	groupStage := bson.D{
+		{
+			"$group", bson.D{{"_id", "$city"},
+				{"count", bson.M{"$sum": 1}}},
+		},
+	}
+	opt := options.Aggregate().SetMaxTime(5 * time.Second)
+	cursor, err = staticDatabase.Collection("nodeInfo").Aggregate(context.TODO(), mongo.Pipeline{groupStage}, opt)
+	if err != nil {
+		return nil
+	}
+
+	err = cursor.All(context.TODO(), &res)
+	if err != nil {
+		return nil
+	}
+
+	for _, item := range res {
+		infoList[item["_id"].(string)] = item["count"].(int32)
+	}
+	return infoList
+}

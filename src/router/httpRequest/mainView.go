@@ -27,3 +27,7 @@ func LinkList(c *gin.Context) {
 func NetInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, *database.GetNetParameter())
 }
+
+func NodeStatistics(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"typeStatistics": database.GetNodeTypeStatistics(), "areaStatistics": database.GetNodeAreaStatistics()})
+}
