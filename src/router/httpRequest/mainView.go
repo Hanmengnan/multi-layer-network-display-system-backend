@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 
-	database "3network-backend/src/model"
+	database "multi-layer-network-display-system-backend/src/model"
 )
 
 var (

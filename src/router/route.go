@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"3network-backend/src/router/httpRequest"
-	"3network-backend/src/router/webSocket"
+	"multi-layer-network-display-system-backend/src/router/httpRequest"
+	"multi-layer-network-display-system-backend/src/router/webSocket"
 )
 
 var (

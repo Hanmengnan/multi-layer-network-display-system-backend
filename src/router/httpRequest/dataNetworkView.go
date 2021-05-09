@@ -1,8 +1,8 @@
 package httpRequest
 
 import (
-	database "3network-backend/src/model"
 	"github.com/gin-gonic/gin"
+	database "multi-layer-network-display-system-backend/src/model"
 	"net/http"
 )
 

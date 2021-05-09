@@ -1,9 +1,9 @@
 package main
 
 import (
-	database "3network-backend/src/model"
 	"fmt"
-	//_ "3network-backend/src/router"
+	database "multi-layer-network-display-system-backend/src/model"
+	_ "multi-layer-network-display-system-backend/src/router"
 )
 
 func main() {

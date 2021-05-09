@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"time"
 
-	config "3network-backend/src/config"
+	config "multi-layer-network-display-system-backend/src/config"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
