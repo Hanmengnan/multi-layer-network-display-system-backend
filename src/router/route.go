@@ -49,8 +49,8 @@ func init() {
 
 	//时频网络路由
 	router.GET("/timeNetInfo", httpRequest.TimeNetworkView)
-	router.GET("/timeNetNodeInfo", httpRequest.TimeNetworkView)
-	router.GET("/timeNetLinkInfo", httpRequest.TimeNetworkView)
+	router.GET("/timeNetNodeStatistics", httpRequest.NodePrecisionStatistics)
+	router.POST("/timeNetRoute", httpRequest.RouteTopology)
 
 	server = &http.Server{
 		Addr:           ":8070",

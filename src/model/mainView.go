@@ -44,7 +44,7 @@ type sysInfo struct {
 }
 
 type NetParameter struct {
-	_id          primitive.ObjectID `bson:"__id" json:"_id,omitempty"`
+	_id          primitive.ObjectID `bson:"__id" json:"_id"`
 	RecordTime   time.Time          `json:"recordTime"`
 	Connectivity float64            `json:"connectivity"`
 	Throughput   float64            `json:"throughput"`
@@ -53,14 +53,16 @@ type NetParameter struct {
 }
 
 type NodeInfo struct {
-	_id      primitive.ObjectID `json:"_id" bson:"_id"`
-	Id       string             `json:"id"`
-	Name     string             `json:"name"`
-	City     string             `json:"city"`
-	State    string             `json:"state"`
-	Location []float64          `json:"location"`
-	Type     string             `json:"type"`
-	Topology string             `json:"topology"`
+	_id       primitive.ObjectID `json:"_id" bson:"_id"`
+	Id        string             `json:"id"`
+	Name      string             `json:"name"`
+	City      string             `json:"city"`
+	State     string             `json:"state"`
+	Location  []float64          `json:"location"`
+	Type      string             `json:"type"`
+	Precision string             `json:"precision"`
+	Topology  string             `json:"topology"`
+	Error     int                `json:"error"`
 }
 
 type LinkInfo struct {
@@ -78,12 +80,12 @@ type LinkInfo struct {
 	UsedForData bool               `json:"usedForData"`
 }
 
-type situationHandleInfo struct {
+type SituationHandleInfo struct {
 	_id         primitive.ObjectID `json:"_id" bson:"_id"`
 	Id          string             `json:"id"`
-	Type        int                `json:"type"`
+	Type        string             `json:"type"`
 	Handler     string             `json:"handler"`
-	HandleTime  string             `json:"handleTime"`
+	HandleTime  time.Time          `json:"handleTime"`
 	HandleState int                `json:"handleState"`
 	Origin      string             `json:"origin"`
 	Message     string             `json:"message"`
@@ -116,16 +118,16 @@ func GetNetParameter() *NetParameter {
 	return &info
 }
 
-func GetSituationHandleInfo() map[string][]situationHandleInfo {
-	var situationHandle = make(map[string][]situationHandleInfo)
+func GetSituationHandleInfo() map[string]interface{} {
+	var situationHandle = make(map[string]interface{})
 	var cursor *mongo.Cursor
 
-	closure := func(aimSituaion int) []situationHandleInfo {
-		var situaionList []situationHandleInfo
-		cursor, err = staticDatabase.Collection("nodeMessage").Find(context.TODO(), bson.M{"type": aimSituaion, "handleState": 0})
-		find(&situaionList, cursor)
+	closure := func(aimSituation int) []SituationHandleInfo {
+		var situationList []SituationHandleInfo
+		cursor, err = dynamicDatabase.Collection("nodeMessage").Find(context.TODO(), bson.M{"handleState": aimSituation})
+		find(&situationList, cursor)
 		err = cursor.Close(context.TODO())
-		return situaionList
+		return situationList
 	}
 
 	situationHandle["handled"] = closure(2)
@@ -223,7 +225,7 @@ func GetNodeTypeStatistics() map[string]int32 {
 func GetNodeAreaStatistics() map[string]int32 {
 	var cursor *mongo.Cursor
 	var res []bson.M
-	var infoList = make(map[string]int32)
+	var infoMap = make(map[string]int32)
 	groupStage := bson.D{
 		{
 			"$group", bson.D{{"_id", "$city"},
@@ -242,7 +244,12 @@ func GetNodeAreaStatistics() map[string]int32 {
 	}
 
 	for _, item := range res {
-		infoList[item["_id"].(string)] = item["count"].(int32)
+		province := CP_KV[item["_id"].(string)]
+		if _, ok := infoMap[province]; ok {
+			infoMap[province] = item["count"].(int32)
+		} else {
+			infoMap[province] += item["count"].(int32)
+		}
 	}
-	return infoList
+	return infoMap
 }

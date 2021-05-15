@@ -11,10 +11,11 @@ import (
 type webSocketDataChannel struct {
 	netParameter chan database.NetParameter
 	nodeList     chan []database.NodeInfo
+	situations   chan map[string]interface{}
 }
 
 var (
-	DataChannel = webSocketDataChannel{make(chan database.NetParameter, 1), make(chan []database.NodeInfo, 1)}
+	DataChannel = webSocketDataChannel{make(chan database.NetParameter, 1), make(chan []database.NodeInfo, 1), make(chan map[string]interface{}, 1)}
 )
 
 func WSHandler(c *gin.Context) {
@@ -36,6 +37,8 @@ func WSHandler(c *gin.Context) {
 			dataType = "parameterChange"
 		case data = <-DataChannel.nodeList:
 			dataType = "nodeList"
+		case data = <-DataChannel.situations:
+			dataType = "situation"
 		}
 		err := ws.WriteJSON(gin.H{"dataType": dataType, "data": data})
 		if err != nil {
@@ -50,7 +53,8 @@ func Test() {
 		DataChannel.nodeList <- info1
 		info2 := database.GetNetParameter()
 		DataChannel.netParameter <- *info2
-
+		info3 := database.GetSituationHandleInfo()
+		DataChannel.situations <- info3
 		time.Sleep(3 * time.Second)
 	}
 }

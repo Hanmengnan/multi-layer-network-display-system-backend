@@ -51,7 +51,11 @@ func find(infoListPtr interface{}, cursor *mongo.Cursor) {
 
 	for cursor.Next(context.TODO()) {
 		newInfo := reflect.New(infoELemType)
-		cursor.Decode(newInfo.Interface())
+		err = cursor.Decode(newInfo.Interface())
+		if err != nil {
+			fmt.Printf("%v", err)
+			return
+		}
 		infoSlice = reflect.Append(infoSlice, newInfo.Elem())
 	}
 
