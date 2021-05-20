@@ -7,12 +7,6 @@ import (
 	"net/http"
 )
 
-func TimeNetworkView(c *gin.Context) {
-}
-
-func TimeNetworkLinks(c *gin.Context) {
-}
-
 func NodePrecisionStatistics(c *gin.Context) {
 	res := database.GetNodePrecisionStatistics()
 	c.JSON(http.StatusOK, res)

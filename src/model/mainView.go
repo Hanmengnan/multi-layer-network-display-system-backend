@@ -53,16 +53,24 @@ type NetParameter struct {
 }
 
 type NodeInfo struct {
-	_id       primitive.ObjectID `json:"_id" bson:"_id"`
-	Id        string             `json:"id"`
-	Name      string             `json:"name"`
-	City      string             `json:"city"`
-	State     string             `json:"state"`
-	Location  []float64          `json:"location"`
-	Type      string             `json:"type"`
-	Precision string             `json:"precision"`
-	Topology  string             `json:"topology"`
-	Error     int                `json:"error"`
+	_id              primitive.ObjectID `json:"_id" bson:"_id"`
+	Id               string             `json:"id" bson:"id"`
+	Name             string             `json:"name" bson:"name"`
+	City             string             `json:"city" bson:"city"`
+	State            string             `json:"state" bson:"state"`
+	Location         []float64          `json:"location"bson:"location"`
+	Type             string             `json:"type"bson:"type"`
+	Precision        string             `json:"precision"`
+	Topology         string             `json:"topology"`
+	Error            int                `json:"error"`
+	Level            string             `json:"level"`
+	ClockTime        string             `json:"clockTime"`
+	InOutValue       int32              `json:"inOutValue"`
+	ChromeCompensate string             `json:"chromeCompensate"`
+	CoreRouter       string             `json:"coreRouter"`
+	NodeSupervisor   string             `json:"nodeSupervisor" bson:"nodesuperviser"`
+	Contactable      interface{}        `json:"contactable"`
+	Contact          string             `json:"contact"`
 }
 
 type LinkInfo struct {
@@ -111,7 +119,7 @@ func GetNetParameter() *NetParameter {
 	var info NetParameter
 	var option = options.FindOne()
 	option.SetSort(bson.M{"recordTime": -1})
-	err = dynamicDatabase.Collection("netParameter").FindOne(context.TODO(), bson.M{}).Decode(&info)
+	err = dynamicDatabase.Collection("netParameter").FindOne(context.TODO(), bson.M{}, option).Decode(&info)
 	if err != nil {
 		return nil
 	}

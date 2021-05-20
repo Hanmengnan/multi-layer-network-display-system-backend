@@ -35,7 +35,7 @@ type DataNetworkErrorAlarm struct {
 }
 
 type ParameterChange struct {
-	_id            primitive.ObjectID `json:"id" bson:"_id" :"_id"`
+	_id            primitive.ObjectID `json:"id" bson:"_id"`
 	Id             string             `json:"id"`
 	Time           time.Time          `json:"time"`
 	PrecisionError float64            `json:"precisionError"`
@@ -44,7 +44,7 @@ type ParameterChange struct {
 }
 
 type NodeDetail struct {
-	_id            primitive.ObjectID `json:"id" bson:"_id"`
+	_id            primitive.ObjectID `json:"_id" bson:"_id"`
 	Name           string             `json:"name"`
 	Precision      string             `json:"precision"`
 	Error          int                `json:"error"`
@@ -247,15 +247,5 @@ func GetNodeMessageOriginStatistics(nodeId string) map[string]int32 {
 		err = staticDatabase.Collection("nodeInfo").FindOne(context.TODO(), bson.M{"id": item["_id"]}).Decode(&info)
 		infoList[info.Name] = item["count"].(int32)
 	}
-	return infoList
-}
-
-func GetDataNetworkErrorALarms() []DataNetworkErrorAlarm {
-	var cursor *mongo.Cursor
-	var infoList []DataNetworkErrorAlarm
-	//var info DataNetworkErrorAlarm
-	cursor, err = dynamicDatabase.Collection("dataNetworkErrorAlarm").Find(context.TODO(), bson.M{})
-	find(&infoList, cursor)
-	err = cursor.Close(context.TODO())
 	return infoList
 }

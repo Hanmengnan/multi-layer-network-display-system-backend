@@ -31,3 +31,7 @@ func NetInfo(c *gin.Context) {
 func NodeStatistics(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"typeStatistics": database.GetNodeTypeStatistics(), "areaStatistics": database.GetNodeAreaStatistics()})
 }
+
+func SituationHandle(c *gin.Context) {
+	c.JSON(http.StatusOK, database.GetSituationHandleInfo())
+}

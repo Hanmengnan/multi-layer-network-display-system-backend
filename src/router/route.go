@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"log"
+	database "multi-layer-network-display-system-backend/src/model"
 	"net/http"
 	"sync"
 	"time"
@@ -19,36 +20,32 @@ var (
 
 func init() {
 	var wg sync.WaitGroup
-	wg.Add(2)
+	wg.Add(3)
 
+	gin.ForceConsoleColor()
 	router = gin.Default()
 
 	// WebSocket
 	router.GET("/ws", webSocket.WSHandler)
+
 	//主视图路由
 	router.GET("/sysInfo", httpRequest.SysInfo)
 	router.GET("/nodeList", httpRequest.NodeList)
 	router.GET("/linkList", httpRequest.LinkList)
 	router.GET("/flowInfo", httpRequest.FlowChange)
 	router.GET("/netInfo", httpRequest.NetInfo)
-
 	router.GET("/nodeStatistics", httpRequest.NodeStatistics)
+	router.GET("/eventList", httpRequest.SituationHandle)
 
 	//光网络路由
-	router.GET("/lightNetInfo", httpRequest.LightNetworkView)
-	router.GET("/lightNetBandMsg", httpRequest.LightNetworkView)
-	router.GET("/lightNetBandSet", httpRequest.LightNetworkView)
-	router.GET("/lightNetBandUse", httpRequest.LightNetworkView)
-	router.GET("/lightNetNodeInfo", httpRequest.LightNetworkView)
-	router.GET("/lightNetLinkInfo", httpRequest.LightNetworkView)
+	router.GET("/lightNetNodeStatistics", httpRequest.LightNetNodeStatistics)
+	router.POST("/lightNetNodeInfo", httpRequest.LightNetNodeInfo)
+	router.POST("/lightNetLinkInfo", httpRequest.LightNetLinkInfo)
 
 	//数据网络路由
 	router.GET("/dataNetInfo", httpRequest.DataNetworkView)
-	router.POST("/dataNetNodeInfo", httpRequest.DataNetworkNodeDetail)
-	router.POST("/dataNetLinkInfo", httpRequest.DataNetworkLinkDetail)
 
 	//时频网络路由
-	router.GET("/timeNetInfo", httpRequest.TimeNetworkView)
 	router.GET("/timeNetNodeStatistics", httpRequest.NodePrecisionStatistics)
 	router.POST("/timeNetRoute", httpRequest.RouteTopology)
 
@@ -66,7 +63,15 @@ func init() {
 			log.Fatal(err)
 		}
 	}()
-	go webSocket.Test()
+	// 服务监听
+
+	go webSocket.NewDataDetect()
+	// 监测是否有新数据写入
+
+	time.Sleep(time.Second * 2)
+
+	go database.InjectNewData()
+	// 模拟数据库写入新数据
 
 	wg.Wait()
 }
