@@ -36,7 +36,7 @@ func GetNodeTypeStatisticsHealth() map[string]int32 {
 		log.Println(err)
 		return nil
 	}
-
+	infoList["光中继站"], infoList["电中继站"], infoList["业务上下站"] = 0, 0, 0
 	for _, item := range res {
 		infoList[item["_id"].(string)] = item["count"].(int32)
 	}

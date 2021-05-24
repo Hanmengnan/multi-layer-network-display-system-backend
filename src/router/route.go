@@ -3,7 +3,6 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"log"
-	database "multi-layer-network-display-system-backend/src/model"
 	"net/http"
 	"sync"
 	"time"
@@ -70,7 +69,7 @@ func init() {
 
 	time.Sleep(time.Second * 2)
 
-	go database.InjectNewData()
+	//go database.InjectNewData()
 	// 模拟数据库写入新数据
 
 	wg.Wait()

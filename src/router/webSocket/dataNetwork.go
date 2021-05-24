@@ -1,7 +1,6 @@
 package webSocket
 
 import (
-	"fmt"
 	database "multi-layer-network-display-system-backend/src/model"
 )
 
@@ -35,6 +34,5 @@ func DataNetworkNodeDetail(nodeId string) DataNetworkNodeDetailResponse {
 	res.DateStatistics = database.GetNodeMessageDateStatistics(nodeId)
 	res.OriginStatistics = database.GetNodeMessageOriginStatistics(nodeId)
 	res.NodeDetail = database.GetNodeDetail(nodeId)
-	fmt.Printf("%v", res)
 	return res
 }

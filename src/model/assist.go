@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -36,11 +37,12 @@ var (
 	nodeHashMap        map[string]bool
 	backtrack          []string
 	startNode, endNode string
-	NewDataChannel     = make(chan string, 1)
+	NewDataChannel     = make(chan string, 100)
 )
 
 func dfs(nodeName string, aimNode string) {
 	if nodeName == aimNode {
+		//fmt.Printf("到达啦：%v\n", backtrack)
 		_, err = staticDatabase.Collection("graph").UpdateOne(context.TODO(), bson.M{"start": startNode, "end": endNode}, bson.M{"$push": bson.M{"route": backtrack}})
 		if err != nil {
 			log.Printf("%v", err)
@@ -57,8 +59,11 @@ func dfs(nodeName string, aimNode string) {
 		return
 	}
 	find(&tmp, cursor)
+	//fmt.Printf("路径列表 ：%v\n", tmp)
+
 	for _, nextNode := range tmp {
 		nextNodeName := map[bool]string{true: nextNode.Node2Name, false: nextNode.Node1Name}[nextNode.Node1Name == nodeName]
+		//fmt.Printf("下一个节点 ：%v\n", nextNodeName)
 		if nodeHashMap[nextNodeName] == false {
 
 			nodeHashMap[nextNodeName] = true
@@ -100,6 +105,7 @@ func GraphGenerate() {
 				backtrack = append(backtrack, start.Name)
 
 				startNode, endNode = start.Id, end.Id
+				//print("新一轮 ", start.Name, " ", end.Name)
 				dfs(start.Name, end.Name)
 
 				nodeHashMap[start.Name] = false
@@ -125,15 +131,20 @@ func InjectNewData() {
 	find(&nodes, cursor)
 	cursor, _ = staticDatabase.Collection("linkInfo").Find(context.TODO(), bson.M{})
 	find(&links, cursor)
+
+	messageType := []string{"正常", "正常", "繁忙", "故障"}
+	handleType := []int{1, 2, 0}
+	handler := []string{"李明宇", "李敏", "李娇杨"}
+
 	for {
-		choice := rand.Intn(5)
-		//choice := 1
+		//choice := rand.Intn(5)
+		choice := 2
 		switch choice {
 		case 0:
 			dynamicDatabase.Collection("netParameter").InsertOne(context.TODO(), bson.M{
 				"recordTime":   time.Now(),
 				"connectivity": rand.Float64()*10 + 90,
-				"throughput":   52001,
+				"throughput":   rand.Intn(50) + 50,
 				"utilization":  rand.Float64()*50 + 40,
 				"responseTime": rand.Float64() * 200,
 			})
@@ -153,13 +164,32 @@ func InjectNewData() {
 			NewDataChannel <- "nodeList"
 			NewDataChannel <- "nodeDetail"
 		case 2:
+			mtype := messageType[rand.Intn(len(messageType))]
+			_, err = dynamicDatabase.Collection("nodeMessage").InsertOne(context.TODO(), bson.M{
+				"id":          strconv.Itoa(rand.Intn(1000000)),
+				"rTime":       time.Now().Add(time.Hour * -24 * 3),
+				"handleTime":  time.Now(),
+				"message":     mtype,
+				"handleState": handleType[rand.Intn(len(handleType))],
+				"type":        mtype,
+				"handler":     handler[rand.Intn(len(handler))],
+				"aimSite":     nodes[rand.Intn(len(nodes))].Id,
+				"fromSite":    nodes[rand.Intn(len(nodes))].Id,
+				"originSite":  nodes[rand.Intn(len(nodes))].Id,
+				"nowSite":     nodes[rand.Intn(len(nodes))].Id,
+				"origin":      "基站",
+			})
+			if err != nil {
+				print(err)
+				return
+			}
 			NewDataChannel <- "situation"
 		case 3:
 			dynamicDatabase.Collection("linkParameter").InsertOne(context.TODO(), bson.M{
 				"id":             links[rand.Intn(len(links))].Id,
 				"time":           time.Now(),
-				"precisionError": rand.Intn(20),
-				"loss":           rand.Float64() * 10,
+				"precisionError": rand.Intn(500),
+				"loss":           rand.Float64() * 2,
 				"used":           rand.Float64()*50 + 50,
 			})
 			NewDataChannel <- "nodeOverLoad"

@@ -29,11 +29,11 @@ type sysInfo struct {
 		Principal struct {
 			Name  string `json:"name"`
 			Photo string `json:"photo"`
-		}
+		} `json:"principal"`
 		Duty struct {
 			Name  string `json:"name"`
 			Photo string `json:"photo"`
-		}
+		} `json:"duty"`
 	} `json:"people"`
 	Band struct {
 		Light     bandSetting

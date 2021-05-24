@@ -66,7 +66,6 @@ func WSHandler(c *gin.Context) {
 
 			rdataType = message["dataType"].(string)
 			rdata = message["data"].(string)
-			print(rdata)
 			switch rdataType {
 			case "lightNetNodeOverload":
 				if nodeBandOverloadIndicator = rdata; nodeBandOverloadIndicator != "" {

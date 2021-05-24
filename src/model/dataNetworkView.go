@@ -87,7 +87,7 @@ func GetLinkParameterChange(linkId string) []ParameterChange {
 	var infoList []ParameterChange
 	findOptions := options.Find()
 	findOptions.SetSort(bson.D{{"time", -1}})
-	findOptions.SetLimit(30 * 24)
+	findOptions.SetLimit(30)
 
 	cursor, err = dynamicDatabase.Collection("linkParameter").Find(context.TODO(), bson.M{"id": linkId}, findOptions)
 	find(&infoList, cursor)
@@ -237,7 +237,7 @@ func GetNodeMessageOriginStatistics(nodeId string) map[string]int32 {
 		}},
 	}
 	sortStage := bson.D{{"$sort", bson.D{{"count", -1}}}}
-	limitStage := bson.D{{"$limit", 7}}
+	limitStage := bson.D{{"$limit", 5}}
 
 	opts := options.Aggregate().SetMaxTime(5 * time.Second)
 	cursor, err = dynamicDatabase.Collection("nodeMessage").Aggregate(context.TODO(), mongo.Pipeline{matchStage, groupStage, sortStage, limitStage}, opts)
